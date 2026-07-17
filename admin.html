@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin · Jonatan & Fátima</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:#060606;color:#fff;min-height:100vh;-webkit-font-smoothing:antialiased;}
+input,textarea{color-scheme:dark;}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,0.3);}
+.adm-in{width:100%;padding:12px 14px;background:#0d0d0d;border:1px solid rgba(255,215,0,0.25);border-radius:10px;color:#fff;font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;box-sizing:border-box;}
+.adm-lbl{font-size:0.6rem;letter-spacing:2px;color:#FFD700;font-weight:700;text-transform:uppercase;margin:0 0 8px;display:block;}
+.adm-btn{background:#FFD700;border:none;color:#0a0a0a;font-family:'Outfit',sans-serif;font-weight:800;font-size:0.82rem;padding:11px 20px;border-radius:10px;cursor:pointer;width:100%;}
+.adm-btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.7);font-family:'Outfit',sans-serif;font-weight:600;font-size:0.8rem;padding:11px 18px;border-radius:10px;cursor:pointer;}
+.card{background:#141414;border:1px solid rgba(255,215,0,0.2);border-radius:16px;padding:18px;margin-bottom:22px;}
+.tab-btn{flex:0 0 auto;padding:8px 16px;border-radius:50px;font-size:0.7rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Outfit',sans-serif;border:1px solid rgba(255,215,0,0.3);background:transparent;color:#FFD700;}
+.tab-btn.active{background:#FFD700;color:#0a0a0a;border-color:#FFD700;}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+<div style="max-width:480px;margin:0 auto;min-height:100vh;position:relative;">
+
+<!-- LOCK SCREEN -->
+<div id="lockScreen" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;">
+  <div style="font-size:2.8rem;margin-bottom:14px;">🔒</div>
+  <h1 style="font-family:'Outfit',serif;font-size:2rem;color:#FFD700;margin:0 0 6px;letter-spacing:1px;font-weight:900;">Panel Privado</h1>
+  <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin:0 0 28px;">Solo Jonatan & Fátima · introduce tu clave</p>
+  <input id="pinInput" type="password" inputmode="numeric" placeholder="Clave" class="adm-in" style="max-width:220px;text-align:center;letter-spacing:6px;font-size:1.2rem;margin-bottom:14px;" onkeydown="if(event.key==='Enter')doUnlock()">
+  <button onclick="doUnlock()" class="adm-btn" style="max-width:220px;">Entrar</button>
+  <a href="index.html" style="margin-top:22px;color:rgba(255,255,255,0.4);font-size:0.74rem;text-decoration:none;">← Volver a la página</a>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="hidden">
+
+  <!-- HEADER -->
+  <div style="position:sticky;top:0;z-index:50;background:rgba(10,10,10,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,215,0,0.2);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div style="font-family:'Outfit',sans-serif;font-size:1.15rem;color:#FFD700;font-weight:900;line-height:1;">Panel Admin</div>
+      <div style="font-size:0.58rem;color:rgba(255,255,255,0.45);letter-spacing:1px;margin-top:3px;">JONATAN &amp; FÁTIMA · PRIVADO</div>
+    </div>
+    <a href="index.html" style="text-decoration:none;background:transparent;border:1px solid rgba(255,215,0,0.4);color:#FFD700;font-size:0.66rem;font-weight:700;padding:8px 13px;border-radius:50px;">👁 Ver página</a>
+  </div>
+
+  <!-- TABS -->
+  <div style="display:flex;gap:7px;overflow-x:auto;padding:13px 16px;background:#0a0a0a;border-bottom:1px solid rgba(255,215,0,0.12);-webkit-overflow-scrolling:touch;">
+    <button class="tab-btn active" id="tab-portada" onclick="setTab('portada')">🖼 Portada</button>
+    <button class="tab-btn" id="tab-avatar" onclick="setTab('avatar')">🤖 Chat</button>
+    <button class="tab-btn" id="tab-telefonos" onclick="setTab('telefonos')">📞 Teléfonos</button>
+    <button class="tab-btn" id="tab-app" onclick="setTab('app')">📲 APP</button>
+  </div>
+
+  <div style="padding:20px 18px;padding-bottom:60px;">
+
+    <!-- TAB PORTADA -->
+    <div id="sec-portada">
+      <p style="color:rgba(255,255,255,0.55);font-size:0.78rem;line-height:1.6;margin:0 0 18px;">Cambia la foto principal que aparece en la sección de inicio. Se actualiza al instante cuando se guarda.</p>
+      <div class="card">
+        <span class="adm-lbl">Foto de portada actual</span>
+        <div style="border-radius:12px;overflow:hidden;border:1px dashed rgba(255,215,0,0.4);background:#000;width:100%;aspect-ratio:4/5;margin-bottom:12px;position:relative;max-width:220px;">
+          <img id="previewPortada" src="" alt="Portada" style="width:100%;height:100%;object-fit:cover;display:none;">
+          <div id="previewPortadaEmpty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,215,0,0.5);font-size:0.7rem;letter-spacing:1px;">SIN FOTO PERSONALIZADA</div>
+        </div>
+        <div style="display:flex;gap:9px;margin-bottom:14px;">
+          <button onclick="pickerPortada()" class="adm-btn">📷 Subir foto</button>
+          <button onclick="delPortada()" class="adm-btn-ghost">↩ Restaurar</button>
+        </div>
+        <div style="background:rgba(42,111,219,0.08);border:1px solid rgba(120,170,255,0.25);border-radius:10px;padding:11px 13px;">
+          <span class="adm-lbl" style="color:#9cc0ff;">🔗 O pega un link de Google Drive:</span>
+          <div style="display:flex;gap:7px;">
+            <input id="drivePortada" type="text" placeholder="Link de Drive → Portada" class="adm-in" style="font-size:0.74rem;padding:9px 11px;">
+            <button onclick="drivePortada()" style="flex:0 0 auto;background:#2A6FDB;border:none;color:#fff;font-size:0.64rem;font-weight:700;padding:0 12px;border-radius:8px;cursor:pointer;">Usar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB AVATAR CHAT -->
+    <div id="sec-avatar" class="hidden">
+      <p style="color:rgba(255,255,255,0.55);font-size:0.78rem;line-height:1.6;margin:0 0 18px;">Cambia la foto del botón flotante del chat y de la cabecera de la conversación.</p>
+      <div class="card">
+        <span class="adm-lbl">Foto de perfil · Chat</span>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+          <div style="width:84px;height:84px;flex:0 0 auto;border-radius:50%;overflow:hidden;border:2px solid #FFD700;background:#000;position:relative;">
+            <img id="previewAvatar" src="" alt="Avatar" style="width:100%;height:100%;object-fit:cover;display:none;">
+            <div id="previewAvatarEmpty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,215,0,0.5);font-size:1.6rem;">👤</div>
+          </div>
+          <div>
+            <p style="font-size:0.72rem;color:#fff;font-weight:600;margin:0 0 4px;">Foto del asistente virtual</p>
+            <p style="font-size:0.62rem;color:rgba(255,255,255,0.4);line-height:1.4;margin:0;">Aparece como botón circular y en la cabecera del chat.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:9px;margin-bottom:14px;">
+          <button onclick="pickerAvatar()" class="adm-btn">📷 Subir foto</button>
+          <button onclick="delAvatar()" class="adm-btn-ghost">↩ Restaurar</button>
+        </div>
+        <div style="background:rgba(42,111,219,0.08);border:1px solid rgba(120,170,255,0.25);border-radius:10px;padding:11px 13px;">
+          <span class="adm-lbl" style="color:#9cc0ff;">🔗 O pega un link de Google Drive:</span>
+          <div style="display:flex;gap:7px;">
+            <input id="driveAvatar" type="text" placeholder="Link de Drive → Avatar" class="adm-in" style="font-size:0.74rem;padding:9px 11px;">
+            <button onclick="dodriveAvatar()" style="flex:0 0 auto;background:#2A6FDB;border:none;color:#fff;font-size:0.64rem;font-weight:700;padding:0 12px;border-radius:8px;cursor:pointer;">Usar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB TELÉFONOS -->
+    <div id="sec-telefonos" class="hidden">
+      <p style="color:rgba(255,255,255,0.55);font-size:0.78rem;line-height:1.6;margin:0 0 18px;">Actualiza los números de WhatsApp a los que llegan las solicitudes de cada servicio.</p>
+      <div class="card">
+        <span class="adm-lbl">Albañilería & Hostelería</span>
+        <input id="ph-albanileria" type="tel" placeholder="+34600000000" class="adm-in" style="margin-bottom:18px;">
+        <span class="adm-lbl">Páginas Web</span>
+        <input id="ph-web" type="tel" placeholder="+34600000000" class="adm-in" style="margin-bottom:18px;">
+        <span class="adm-lbl">Peluquería & Cuidados</span>
+        <input id="ph-peluqueria" type="tel" placeholder="+34600000000" class="adm-in" style="margin-bottom:22px;">
+        <button onclick="savePhones()" class="adm-btn">💾 Guardar teléfonos</button>
+        <p style="margin-top:10px;font-size:0.64rem;color:rgba(255,255,255,0.35);line-height:1.5;">Los cambios se aplican en el próximo acceso a la página desde este dispositivo.</p>
+      </div>
+    </div>
+
+    <!-- TAB APP -->
+    <div id="sec-app" class="hidden">
+      <div class="card">
+        <span class="adm-lbl">Instalar como APP</span>
+        <div style="background:rgba(255,215,0,0.06);border-left:3px solid #FFD700;padding:15px 17px;border-radius:0 12px 12px 0;color:rgba(255,255,255,0.62);font-size:0.78rem;line-height:1.7;margin-bottom:20px;">
+          En la página aparece el botón <strong style="color:#FFD700;">📲 Instalar</strong> cuando el navegador lo permite.<br>
+          Si no aparece:<br>
+          • <strong style="color:#FFD700;">iPhone</strong> — Abre en Safari → Compartir → "Añadir a pantalla de inicio"<br>
+          • <strong style="color:#FFD700;">Android</strong> — Chrome → menú ⋮ → "Instalar aplicación"
+        </div>
+      </div>
+      <div class="card">
+        <span class="adm-lbl">Copia de seguridad</span>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.76rem;line-height:1.6;margin:0 0 14px;">Todo lo que configuras se guarda en este dispositivo. Copia tus datos por si cambias de móvil.</p>
+        <button onclick="exportData()" style="width:100%;background:transparent;border:1px solid rgba(255,215,0,0.4);color:#FFD700;font-weight:700;padding:13px;border-radius:11px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:0.82rem;">⬇ Copiar mis datos (backup)</button>
+      </div>
+      <div class="card">
+        <span class="adm-lbl">Restaurar todos los datos</span>
+        <textarea id="importData" placeholder="Pega aquí los datos del backup..." rows="3" class="adm-in" style="margin-bottom:12px;resize:vertical;"></textarea>
+        <button onclick="importBackup()" class="adm-btn" style="background:transparent;border:1px solid rgba(255,215,0,0.4);color:#FFD700;">⬆ Restaurar backup</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Hidden file input -->
+<input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleFile(event)">
+
+<script>
+var PIN = '0824';
+var _pending = null;
+
+function doUnlock(){
+  var v = document.getElementById('pinInput').value;
+  if(v === PIN){
+    document.getElementById('lockScreen').style.display='none';
+    document.getElementById('adminPanel').classList.remove('hidden');
+    loadAll();
+  } else {
+    alert('Clave incorrecta.');
+    document.getElementById('pinInput').value='';
+  }
+}
+document.getElementById('pinInput').addEventListener('keydown',function(e){if(e.key==='Enter')doUnlock();});
+
+function setTab(name){
+  ['portada','avatar','telefonos','app'].forEach(function(t){
+    document.getElementById('sec-'+t).classList.add('hidden');
+    document.getElementById('tab-'+t).classList.remove('active');
+  });
+  document.getElementById('sec-'+name).classList.remove('hidden');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+/* ── Images ── */
+function compress(file, cb){
+  var img = new Image(), url = URL.createObjectURL(file);
+  img.onload = function(){
+    var max=1100, w=img.width, h=img.height, sc=Math.min(1,max/Math.max(w,h));
+    var c=document.createElement('canvas'); c.width=Math.round(w*sc); c.height=Math.round(h*sc);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    URL.revokeObjectURL(url); cb(c.toDataURL('image/jpeg',0.82));
+  };
+  img.src=url;
+}
+function handleFile(e){
+  var f=e.target&&e.target.files&&e.target.files[0]; if(!f)return;
+  compress(f,function(data){
+    if(_pending==='portada') savePortada(data);
+    else if(_pending==='avatar') saveAvatar(data);
+    _pending=null;
+  });
+  e.target.value='';
+}
+function picker(type){ _pending=type; var i=document.getElementById('fileInput'); i.value=''; i.click(); }
+function pickerPortada(){ picker('portada'); }
+function pickerAvatar(){ picker('avatar'); }
+
+function driveUrl(url){
+  if(!url) return '';
+  var m=url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+  if(m) return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1400';
+  m=url.match(/[?&]id=([\w-]+)/);
+  if(m && /drive\.google/.test(url)) return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1400';
+  return url;
+}
+
+function savePortada(data){
+  try{ localStorage.setItem('jf_portada',data); showPreviewPortada(data); alert('✅ Portada actualizada.'); }
+  catch(e){ alert('Sin espacio. Borra alguna foto antigua.'); }
+}
+function delPortada(){
+  localStorage.removeItem('jf_portada');
+  document.getElementById('previewPortada').style.display='none';
+  document.getElementById('previewPortadaEmpty').style.display='flex';
+  alert('↩ Portada restaurada a la original.');
+}
+function drivePortada(){
+  var v=document.getElementById('drivePortada').value.trim();
+  if(!v){alert('Pega un link de Drive.');return;}
+  savePortada(driveUrl(v));
+}
+function showPreviewPortada(src){
+  var img=document.getElementById('previewPortada');
+  img.src=src; img.style.display='block';
+  document.getElementById('previewPortadaEmpty').style.display='none';
+}
+
+function saveAvatar(data){
+  try{ localStorage.setItem('jf_chatbot_avatar',data); showPreviewAvatar(data); alert('✅ Foto de chat actualizada.'); }
+  catch(e){ alert('Sin espacio.'); }
+}
+function delAvatar(){
+  localStorage.removeItem('jf_chatbot_avatar');
+  document.getElementById('previewAvatar').style.display='none';
+  document.getElementById('previewAvatarEmpty').style.display='flex';
+  alert('↩ Foto del chat restaurada a la original.');
+}
+function dodriveAvatar(){
+  var v=document.getElementById('driveAvatar').value.trim();
+  if(!v){alert('Pega un link de Drive.');return;}
+  saveAvatar(driveUrl(v));
+}
+function showPreviewAvatar(src){
+  var img=document.getElementById('previewAvatar');
+  img.src=src; img.style.display='block';
+  document.getElementById('previewAvatarEmpty').style.display='none';
+}
+
+/* ── Phones ── */
+function savePhones(){
+  var a=document.getElementById('ph-albanileria').value.trim();
+  var w=document.getElementById('ph-web').value.trim();
+  var p=document.getElementById('ph-peluqueria').value.trim();
+  var obj={albanileria:a||null, hosteleria:a||null, web:w||null, peluqueria:p||null};
+  localStorage.setItem('jf_phones',JSON.stringify(obj));
+  alert('✅ Teléfonos guardados. Se aplicarán en el próximo acceso a la página.');
+}
+
+/* ── Backup ── */
+function exportData(){
+  var keys=['jf_portada','jf_chatbot_avatar','jf_phones'];
+  var out={};
+  keys.forEach(function(k){ var v=localStorage.getItem(k); if(v) out[k]=v; });
+  var txt=JSON.stringify(out);
+  try{
+    navigator.clipboard.writeText(txt).then(function(){alert('✅ Datos copiados al portapapeles. Pégalos en un documento para guardarlos.');});
+  }catch(e){
+    prompt('Copia este texto y guárdalo:',txt);
+  }
+}
+function importBackup(){
+  var txt=document.getElementById('importData').value.trim();
+  if(!txt){alert('Pega los datos primero.');return;}
+  try{
+    var obj=JSON.parse(txt);
+    Object.keys(obj).forEach(function(k){ localStorage.setItem(k,obj[k]); });
+    alert('✅ Datos restaurados. Recarga la página para ver los cambios.');
+    loadAll();
+  }catch(e){ alert('Error al leer el backup. Asegúrate de copiar el texto completo.'); }
+}
+
+/* ── Load stored values on open ── */
+function loadAll(){
+  var p=localStorage.getItem('jf_portada');
+  if(p) showPreviewPortada(p);
+  var a=localStorage.getItem('jf_chatbot_avatar');
+  if(a) showPreviewAvatar(a);
+  var ph=localStorage.getItem('jf_phones');
+  if(ph){ try{
+    var o=JSON.parse(ph);
+    if(o.albanileria) document.getElementById('ph-albanileria').value=o.albanileria;
+    if(o.web) document.getElementById('ph-web').value=o.web;
+    if(o.peluqueria) document.getElementById('ph-peluqueria').value=o.peluqueria;
+  }catch(e){} }
+}
+</script>
+</body>
+</html>
