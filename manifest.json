@@ -1,0 +1,15 @@
+{
+  "name": "Servicios Profesionales Jonatan & Fátima",
+  "short_name": "Jonatan & Fátima",
+  "description": "Albañilería, Hostelería, Peluquería, Cuidado de Abuelos y Páginas Web en Calamocha y Zaragoza.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
