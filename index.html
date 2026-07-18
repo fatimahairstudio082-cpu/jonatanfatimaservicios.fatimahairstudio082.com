@@ -1023,6 +1023,106 @@
         }
         .msg-text { flex: 1; }
 
+
+        /* ── TIENDA AMWAY ── */
+        .amway-section {
+            padding: 4rem 2rem;
+            background: #0a0a0a;
+            text-align: center;
+            border-top: 1px solid rgba(255,215,0,0.12);
+        }
+        .amway-section h2 { font-size: 2rem; font-weight: 900; color: var(--gold); margin-bottom: 0.4rem; }
+        .amway-section .sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; }
+
+        .amway-card {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 360px;
+            width: 100%;
+            background: #141414;
+            border: 1px solid rgba(255,215,0,0.25);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            text-decoration: none;
+            transition: all 0.35s;
+            position: relative;
+            overflow: hidden;
+        }
+        .amway-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00b5e2, #0070b8, #00b5e2);
+            background-size: 200%;
+            animation: amway-shine 3s linear infinite;
+        }
+        @keyframes amway-shine { 0%{background-position:0%} 100%{background-position:200%} }
+        .amway-card:hover {
+            border-color: rgba(255,215,0,0.6);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0,112,184,0.2), 0 0 0 1px rgba(255,215,0,0.3);
+        }
+        .amway-logo-wrap {
+            width: 80px; height: 80px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1.2rem;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #0070b8;
+            letter-spacing: -1px;
+            box-shadow: 0 4px 16px rgba(0,112,184,0.3);
+            flex-shrink: 0;
+        }
+        .amway-card-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 0.4rem;
+        }
+        .amway-card-desc {
+            font-size: 0.88rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .amway-card-tags {
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .amway-tag {
+            background: rgba(0,112,184,0.15);
+            border: 1px solid rgba(0,112,184,0.35);
+            color: #7ec8f0;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.3rem 0.7rem;
+            border-radius: 50px;
+        }
+        .amway-btn {
+            background: linear-gradient(135deg,#0070b8 0%,#00b5e2 100%);
+            color: #fff;
+            border: none;
+            padding: 0.85rem 2.2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.25s;
+            box-shadow: 0 4px 16px rgba(0,112,184,0.35);
+            text-decoration: none;
+        }
+        .amway-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,112,184,0.5); }
+        @media (max-width: 480px) {
+            .amway-section h2 { font-size: 1.6rem; }
+            .amway-card { padding: 2rem 1.5rem; }
+        }
+
     </style>
 </head>
 <body>
@@ -1645,6 +1745,29 @@
             </div>
         </section>
         
+
+        <!-- ===== TIENDA AMWAY ===== -->
+        <section class="amway-section">
+            <h2>🛍️ Tienda Online · Amway</h2>
+            <p class="sub">Productos de salud, belleza y nutrición de calidad profesional</p>
+
+            <a id="amway-link" href="https://www.amway.es" target="_blank" class="amway-card">
+                <div class="amway-logo-wrap">AW</div>
+                <div class="amway-card-title">Tienda Amway · Fátima</div>
+                <div class="amway-card-desc">
+                    Suplementos, nutrición deportiva, cosmética, cuidado del hogar y mucho más.<br>
+                    Distribuidora oficial — envío a toda España.
+                </div>
+                <div class="amway-card-tags">
+                    <span class="amway-tag">💊 Nutrición</span>
+                    <span class="amway-tag">💄 Belleza</span>
+                    <span class="amway-tag">🏠 Hogar</span>
+                    <span class="amway-tag">💪 Bienestar</span>
+                </div>
+                <span class="amway-btn">🛒 Ver Productos</span>
+            </a>
+        </section>
+
         <!-- Footer -->
         <footer>
             <h3 style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem;">
@@ -2420,6 +2543,16 @@ ${notas ? `📝 *Notas:* ${notas}` : ''}
       }
     };
     </script>
+
+
+    /* ── Amway link management ── */
+    (function(){
+        var saved = localStorage.getItem('jf_amway_url');
+        if (saved) {
+            var el = document.getElementById('amway-link');
+            if (el) el.href = saved;
+        }
+    })();
 
     <script>
     /* ── Portfolio / Galería Dinámica ── */

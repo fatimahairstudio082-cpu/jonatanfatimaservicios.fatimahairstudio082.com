@@ -440,8 +440,17 @@ function renderTjList(){
 }
 
 /* ── Load stored values on open ── */
+function saveAmwayUrl(){
+  var v=document.getElementById('amway-url-in').value.trim();
+  if(!v){alert('Pega el link de tu tienda Amway.');return;}
+  localStorage.setItem('jf_amway_url',v);
+  alert('✅ Link de Amway guardado. Ya aparece en el botón de la tienda.');
+}
+
 function loadAll(){
   renderTjList();
+  var au=localStorage.getItem('jf_amway_url');
+  if(au){var el=document.getElementById('amway-url-in');if(el)el.value=au;}
   var p=localStorage.getItem('jf_portada');
   if(p) showPreviewPortada(p);
   var a=localStorage.getItem('jf_chatbot_avatar');
