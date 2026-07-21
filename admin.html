@@ -1,468 +1,909 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel Admin · Jonatan & Fátima</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Outfit',sans-serif;background:#060606;color:#fff;min-height:100vh;-webkit-font-smoothing:antialiased;}
-input,textarea{color-scheme:dark;}
-input::placeholder,textarea::placeholder{color:rgba(255,255,255,0.3);}
-.adm-in{width:100%;padding:12px 14px;background:#0d0d0d;border:1px solid rgba(255,215,0,0.25);border-radius:10px;color:#fff;font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;box-sizing:border-box;}
-.adm-lbl{font-size:0.6rem;letter-spacing:2px;color:#FFD700;font-weight:700;text-transform:uppercase;margin:0 0 8px;display:block;}
-.adm-btn{background:#FFD700;border:none;color:#0a0a0a;font-family:'Outfit',sans-serif;font-weight:800;font-size:0.82rem;padding:11px 20px;border-radius:10px;cursor:pointer;width:100%;}
-.adm-btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.7);font-family:'Outfit',sans-serif;font-weight:600;font-size:0.8rem;padding:11px 18px;border-radius:10px;cursor:pointer;}
-.card{background:#141414;border:1px solid rgba(255,215,0,0.2);border-radius:16px;padding:18px;margin-bottom:22px;}
-.tab-btn{flex:0 0 auto;padding:8px 16px;border-radius:50px;font-size:0.7rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Outfit',sans-serif;border:1px solid rgba(255,215,0,0.3);background:transparent;color:#FFD700;}
-.tab-btn.active{background:#FFD700;color:#0a0a0a;border-color:#FFD700;}
-.hidden{display:none!important;}
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel · Jonatan &amp; Fátima</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#C6A14B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script src="./support.js"></script>
 </head>
 <body>
-<div style="max-width:480px;margin:0 auto;min-height:100vh;position:relative;">
+<x-dc>
+<template id="__bundler_thumbnail"><svg viewBox="0 0 80 56" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="56" fill="#FAF5E9"/><text x="40" y="34" text-anchor="middle" font-size="14" fill="#C6A14B">Admin</text></svg></template>
+<helmet>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#FBF8F2;font-family:'Outfit',sans-serif;-webkit-font-smoothing:antialiased;}
+input,textarea,select{color-scheme:light;font-family:'Outfit',sans-serif;}
+input::placeholder,textarea::placeholder{color:rgba(36,31,22,0.35);}
+</style>
+</helmet>
 
-<!-- LOCK SCREEN -->
-<div id="lockScreen" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;">
-  <div style="font-size:2.8rem;margin-bottom:14px;">🔒</div>
-  <h1 style="font-family:'Outfit',serif;font-size:2rem;color:#FFD700;margin:0 0 6px;letter-spacing:1px;font-weight:900;">Panel Privado</h1>
-  <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin:0 0 28px;">Solo Jonatan & Fátima · introduce tu clave</p>
-  <input id="pinInput" type="password" inputmode="numeric" placeholder="Clave" class="adm-in" style="max-width:220px;text-align:center;letter-spacing:6px;font-size:1.2rem;margin-bottom:14px;" onkeydown="if(event.key==='Enter')doUnlock()">
-  <button onclick="doUnlock()" class="adm-btn" style="max-width:220px;">Entrar</button>
-  <a href="index.html" style="margin-top:22px;color:rgba(255,255,255,0.4);font-size:0.74rem;text-decoration:none;">← Volver a la página</a>
-</div>
+<div style="min-height:100vh;background:#FBF8F2;color:#241F16;">
 
-<!-- ADMIN PANEL -->
-<div id="adminPanel" class="hidden">
+  <!-- LOCK -->
+  <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
+    <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;">
+      <div style="font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:#9c7d34;font-weight:700;margin-bottom:16px;">Acceso privado</div>
+      <h1 style="font-size:2rem;font-weight:900;margin-bottom:8px;">Panel de Jonatan &amp; Fátima</h1>
+      <p style="color:rgba(36,31,22,0.5);font-size:0.9rem;margin-bottom:34px;">Introduce la clave para gestionar la web</p>
+      <input type="password" inputmode="numeric" placeholder="Clave" value="{{ pin }}" onChange="{{ onPinChange }}" onKeyDown="{{ onPinKey }}" style="width:220px;text-align:center;letter-spacing:8px;font-size:1.3rem;padding:14px;background:#FFFFFF;border:1px solid rgba(184,146,58,0.55);border-radius:12px;color:#241F16;outline:none;margin-bottom:16px;"/>
+      <button onClick="{{ tryUnlock }}" style="width:220px;background:#C6A14B;color:#241F16;border:none;padding:14px;border-radius:12px;font-weight:800;font-size:0.9rem;cursor:pointer;">Entrar</button>
+      <a href="Jonatan y Fatima - Sitio.dc.html" style="margin-top:26px;color:rgba(36,31,22,0.4);font-size:0.78rem;">← Volver a la página</a>
+    </div>
+  </sc-if>
 
-  <!-- HEADER -->
-  <div style="position:sticky;top:0;z-index:50;background:rgba(10,10,10,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,215,0,0.2);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;">
+  <!-- PANEL -->
+  <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ false }}">
     <div>
-      <div style="font-family:'Outfit',sans-serif;font-size:1.15rem;color:#FFD700;font-weight:900;line-height:1;">Panel Admin</div>
-      <div style="font-size:0.58rem;color:rgba(255,255,255,0.45);letter-spacing:1px;margin-top:3px;">JONATAN &amp; FÁTIMA · PRIVADO</div>
-    </div>
-    <a href="index.html" style="text-decoration:none;background:transparent;border:1px solid rgba(255,215,0,0.4);color:#FFD700;font-size:0.66rem;font-weight:700;padding:8px 13px;border-radius:50px;">👁 Ver página</a>
-  </div>
-
-  <!-- TABS -->
-  <div style="display:flex;gap:7px;overflow-x:auto;padding:13px 16px;background:#0a0a0a;border-bottom:1px solid rgba(255,215,0,0.12);-webkit-overflow-scrolling:touch;">
-    <button class="tab-btn active" id="tab-portada" onclick="setTab('portada')">🖼 Portada</button>
-    <button class="tab-btn" id="tab-avatar" onclick="setTab('avatar')">🤖 Chat</button>
-    <button class="tab-btn" id="tab-telefonos" onclick="setTab('telefonos')">📞 Teléfonos</button>
-    <button class="tab-btn" id="tab-app" onclick="setTab('app')">📲 APP</button>
-    <button class="tab-btn" id="tab-trabajos" onclick="setTab('trabajos')">📸 Trabajos</button>
-  </div>
-
-  <div style="padding:20px 18px;padding-bottom:60px;">
-
-    <!-- TAB PORTADA -->
-    <div id="sec-portada">
-      <p style="color:rgba(255,255,255,0.55);font-size:0.78rem;line-height:1.6;margin:0 0 18px;">Cambia la foto principal que aparece en la sección de inicio. Se actualiza al instante cuando se guarda.</p>
-      <div class="card">
-        <span class="adm-lbl">Foto de portada actual</span>
-        <div style="border-radius:12px;overflow:hidden;border:1px dashed rgba(255,215,0,0.4);background:#000;width:100%;aspect-ratio:4/5;margin-bottom:12px;position:relative;max-width:220px;">
-          <img id="previewPortada" src="" alt="Portada" style="width:100%;height:100%;object-fit:cover;display:none;">
-          <div id="previewPortadaEmpty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,215,0,0.5);font-size:0.7rem;letter-spacing:1px;">SIN FOTO PERSONALIZADA</div>
+      <header style="position:sticky;top:0;z-index:50;background:rgba(251,248,242,0.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(184,146,58,0.45);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:1.2rem;font-weight:800;">Panel de administración</div>
+          <div style="font-size:0.68rem;letter-spacing:1.5px;color:rgba(36,31,22,0.45);margin-top:2px;">JONATAN &amp; FÁTIMA</div>
         </div>
-        <div style="display:flex;gap:9px;margin-bottom:14px;">
-          <button onclick="pickerPortada()" class="adm-btn">📷 Subir foto</button>
-          <button onclick="delPortada()" class="adm-btn-ghost">↩ Restaurar</button>
-        </div>
-        <div style="background:rgba(42,111,219,0.08);border:1px solid rgba(120,170,255,0.25);border-radius:10px;padding:11px 13px;">
-          <span class="adm-lbl" style="color:#9cc0ff;">🔗 O pega un link de Google Drive:</span>
-          <div style="display:flex;gap:7px;">
-            <input id="drivePortada" type="text" placeholder="Link de Drive → Portada" class="adm-in" style="font-size:0.74rem;padding:9px 11px;">
-            <button onclick="drivePortada()" style="flex:0 0 auto;background:#2A6FDB;border:none;color:#fff;font-size:0.64rem;font-weight:700;padding:0 12px;border-radius:8px;cursor:pointer;">Usar</button>
+        <a href="Jonatan y Fatima - Sitio.dc.html" style="border:1px solid rgba(184,146,58,0.6);color:#9c7d34;font-size:0.78rem;font-weight:700;padding:9px 16px;border-radius:100px;">Ver página →</a>
+      </header>
+
+      <div style="display:flex;gap:8px;overflow-x:auto;padding:18px 40px;border-bottom:1px solid rgba(36,31,22,0.08);">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+          <button onClick="{{ t.onSelect }}" style="{{ t.style }}">{{ t.icon }} {{ t.label }}</button>
+        </sc-for>
+      </div>
+
+      <div style="max-width:760px;margin:0 auto;padding:40px 24px 100px;">
+
+        <!-- LOGIN NUBE (compartido: Citas/Bloques/Agenda/Visitas) -->
+        <sc-if value="{{ needCloudLogin }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:20px;padding:26px;">
+            <div style="font-size:1.2rem;font-weight:800;margin-bottom:6px;">Conéctate a tu nube</div>
+            <p style="color:rgba(36,31,22,0.55);font-size:0.88rem;line-height:1.6;margin-bottom:20px;">Entra con tu correo para gestionar citas, bloques, agenda y ver quién visita la web — desde cualquier dispositivo. Es el mismo correo y contraseña que en la web de Fátima Caldea.</p>
+            <input type="email" placeholder="Correo" value="{{ fbEmail }}" onChange="{{ onFbEmail }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.9rem;margin-bottom:10px;"/>
+            <input type="password" placeholder="Contraseña" value="{{ fbPass }}" onChange="{{ onFbPass }}" onKeyDown="{{ onFbKey }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.9rem;margin-bottom:16px;"/>
+            <button onClick="{{ onFbLogin }}" style="width:100%;background:#C6A14B;color:#241F16;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:0.88rem;cursor:pointer;">Conectarme</button>
+            <sc-if value="{{ hasFbErr }}" hint-placeholder-val="{{ false }}">
+              <p style="color:#b64a4a;font-size:0.78rem;margin-top:12px;line-height:1.5;">{{ fbErr }}</p>
+            </sc-if>
           </div>
-        </div>
-      </div>
-    </div>
+        </sc-if>
 
-    <!-- TAB AVATAR CHAT -->
-    <div id="sec-avatar" class="hidden">
-      <p style="color:rgba(255,255,255,0.55);font-size:0.78rem;line-height:1.6;margin:0 0 18px;">Cambia la foto del botón flotante del chat y de la cabecera de la conversación.</p>
-      <div class="card">
-        <span class="adm-lbl">Foto de perfil · Chat</span>
-        <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
-          <div style="width:84px;height:84px;flex:0 0 auto;border-radius:50%;overflow:hidden;border:2px solid #FFD700;background:#000;position:relative;">
-            <img id="previewAvatar" src="" alt="Avatar" style="width:100%;height:100%;object-fit:cover;display:none;">
-            <div id="previewAvatarEmpty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,215,0,0.5);font-size:1.6rem;">👤</div>
+        <!-- barra conectada -->
+        <sc-if value="{{ cloudBar }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px;">
+            <span style="font-size:0.78rem;color:#3f7d3f;font-weight:700;">● Conectada a tu nube</span>
+            <button onClick="{{ onFbLogout }}" style="background:transparent;border:1px solid rgba(36,31,22,0.2);color:rgba(36,31,22,0.55);font-size:0.72rem;font-weight:600;padding:7px 14px;border-radius:100px;cursor:pointer;">Salir</button>
           </div>
-          <div>
-            <p style="font-size:0.72rem;color:#fff;font-weight:600;margin:0 0 4px;">Foto del asistente virtual</p>
-            <p style="font-size:0.62rem;color:rgba(255,255,255,0.4);line-height:1.4;margin:0;">Aparece como botón circular y en la cabecera del chat.</p>
-          </div>
-        </div>
-        <div style="display:flex;gap:9px;margin-bottom:14px;">
-          <button onclick="pickerAvatar()" class="adm-btn">📷 Subir foto</button>
-          <button onclick="delAvatar()" class="adm-btn-ghost">↩ Restaurar</button>
-        </div>
-        <div style="background:rgba(42,111,219,0.08);border:1px solid rgba(120,170,255,0.25);border-radius:10px;padding:11px 13px;">
-          <span class="adm-lbl" style="color:#9cc0ff;">🔗 O pega un link de Google Drive:</span>
-          <div style="display:flex;gap:7px;">
-            <input id="driveAvatar" type="text" placeholder="Link de Drive → Avatar" class="adm-in" style="font-size:0.74rem;padding:9px 11px;">
-            <button onclick="dodriveAvatar()" style="flex:0 0 auto;background:#2A6FDB;border:none;color:#fff;font-size:0.64rem;font-weight:700;padding:0 12px;border-radius:8px;cursor:pointer;">Usar</button>
-          </div>
-        </div>
-      </div>
-    </div>
+        </sc-if>
 
-    <!-- TAB TELÉFONOS -->
-    <div id="sec-telefonos" class="hidden">
-      <p style="color:rgba(255,255,255,0.55);font-size:0.78rem;line-height:1.6;margin:0 0 18px;">Actualiza los números de WhatsApp a los que llegan las solicitudes de cada servicio.</p>
-      <div class="card">
-        <span class="adm-lbl">Albañilería & Hostelería</span>
-        <input id="ph-albanileria" type="tel" placeholder="+34600000000" class="adm-in" style="margin-bottom:18px;">
-        <span class="adm-lbl">Páginas Web</span>
-        <input id="ph-web" type="tel" placeholder="+34600000000" class="adm-in" style="margin-bottom:18px;">
-        <span class="adm-lbl">Peluquería & Cuidados</span>
-        <input id="ph-peluqueria" type="tel" placeholder="+34600000000" class="adm-in" style="margin-bottom:22px;">
-        <button onclick="savePhones()" class="adm-btn">💾 Guardar teléfonos</button>
-        <p style="margin-top:10px;font-size:0.64rem;color:rgba(255,255,255,0.35);line-height:1.5;">Los cambios se aplican en el próximo acceso a la página desde este dispositivo.</p>
-      </div>
-    </div>
-
-    <!-- TAB APP -->
-    <div id="sec-app" class="hidden">
-      <div class="card">
-        <span class="adm-lbl">Instalar como APP</span>
-        <div style="background:rgba(255,215,0,0.06);border-left:3px solid #FFD700;padding:15px 17px;border-radius:0 12px 12px 0;color:rgba(255,255,255,0.62);font-size:0.78rem;line-height:1.7;margin-bottom:20px;">
-          En la página aparece el botón <strong style="color:#FFD700;">📲 Instalar</strong> cuando el navegador lo permite.<br>
-          Si no aparece:<br>
-          • <strong style="color:#FFD700;">iPhone</strong> — Abre en Safari → Compartir → "Añadir a pantalla de inicio"<br>
-          • <strong style="color:#FFD700;">Android</strong> — Chrome → menú ⋮ → "Instalar aplicación"
-        </div>
-      </div>
-      <div class="card">
-        <span class="adm-lbl">Copia de seguridad</span>
-        <p style="color:rgba(255,255,255,0.5);font-size:0.76rem;line-height:1.6;margin:0 0 14px;">Todo lo que configuras se guarda en este dispositivo. Copia tus datos por si cambias de móvil.</p>
-        <button onclick="exportData()" style="width:100%;background:transparent;border:1px solid rgba(255,215,0,0.4);color:#FFD700;font-weight:700;padding:13px;border-radius:11px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:0.82rem;">⬇ Copiar mis datos (backup)</button>
-      </div>
-      <div class="card">
-        <span class="adm-lbl">Restaurar todos los datos</span>
-        <textarea id="importData" placeholder="Pega aquí los datos del backup..." rows="3" class="adm-in" style="margin-bottom:12px;resize:vertical;"></textarea>
-        <button onclick="importBackup()" class="adm-btn" style="background:transparent;border:1px solid rgba(255,215,0,0.4);color:#FFD700;">⬆ Restaurar backup</button>
-      </div>
-    </div>
-
-
-    <!-- TAB TRABAJOS / GALERÍA -->
-    <div id="sec-trabajos" class="hidden">
-      <p style="color:rgba(255,255,255,0.55);font-size:0.78rem;line-height:1.6;margin:0 0 18px;">Añade fotos y trabajos reales que aparecen en la galería de la página principal.</p>
-
-      <!-- Añadir nuevo trabajo -->
-      <div class="card">
-        <span class="adm-lbl">Añadir nuevo trabajo</span>
-
-        <div style="margin-bottom:10px;">
-          <span class="adm-lbl" style="margin-bottom:5px;">Categoría</span>
-          <select id="tj-cat" class="adm-in">
-            <option value="Peluquería">💇 Peluquería</option>
-            <option value="Albañilería">🏗️ Albañilería</option>
-            <option value="Hostelería">☕ Hostelería</option>
-            <option value="Páginas Web">💻 Páginas Web</option>
-            <option value="Cuidados">👵 Cuidados</option>
-            <option value="Otro">⭐ Otro</option>
-          </select>
-        </div>
-
-        <div style="margin-bottom:10px;">
-          <span class="adm-lbl" style="margin-bottom:5px;">Título del trabajo</span>
-          <input id="tj-title" type="text" placeholder="Ej: Corrección de color — antes y después" class="adm-in">
-        </div>
-
-        <div style="margin-bottom:14px;">
-          <span class="adm-lbl" style="margin-bottom:5px;">Descripción (opcional)</span>
-          <input id="tj-desc" type="text" placeholder="Breve descripción del trabajo" class="adm-in">
-        </div>
-
-        <div style="margin-bottom:14px;">
-          <span class="adm-lbl" style="margin-bottom:5px;">Foto del trabajo</span>
-          <div style="display:flex;gap:9px;margin-bottom:10px;">
-            <button onclick="pickerTrabajo()" class="adm-btn">📷 Subir foto</button>
-          </div>
-          <div style="background:rgba(42,111,219,0.08);border:1px solid rgba(120,170,255,0.25);border-radius:10px;padding:11px 13px;">
-            <span class="adm-lbl" style="color:#9cc0ff;">🔗 O pega un link de Google Drive / URL directa:</span>
-            <div style="display:flex;gap:7px;">
-              <input id="tj-drive" type="text" placeholder="Link de Drive o URL de imagen" class="adm-in" style="font-size:0.74rem;padding:9px 11px;">
-              <button onclick="useDriveTrabajo()" style="flex:0 0 auto;background:#2A6FDB;border:none;color:#fff;font-size:0.64rem;font-weight:700;padding:0 12px;border-radius:8px;cursor:pointer;">Usar</button>
+        <!-- PORTADA -->
+        <sc-if value="{{ isPortada }}" hint-placeholder-val="{{ true }}">
+          <p style="color:rgba(36,31,22,0.55);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">La foto principal que aparece en el inicio de la web. Se actualiza al momento.</p>
+          <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:20px;padding:26px;">
+            <div style="border-radius:16px;overflow:hidden;border:1px dashed rgba(198,161,75,0.5);width:220px;aspect-ratio:4/5;margin-bottom:18px;position:relative;background:#FBF8F2;">
+              <sc-if value="{{ hasPortada }}" hint-placeholder-val="{{ false }}">
+                <img src="{{ portadaSrc }}" style="width:100%;height:100%;object-fit:cover;display:block;" onError="this.style.display='none'"/>
+              </sc-if>
+              <sc-if value="{{ noPortada }}" hint-placeholder-val="{{ true }}">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(156,125,52,0.6);font-size:0.7rem;letter-spacing:1px;text-align:center;padding:12px;">SIN FOTO PERSONALIZADA</div>
+              </sc-if>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button onClick="{{ pickPortada }}" style="background:#C6A14B;color:#241F16;border:none;padding:12px 22px;border-radius:10px;font-weight:800;font-size:0.82rem;cursor:pointer;">Subir foto</button>
+              <button onClick="{{ clearPortada }}" style="background:transparent;border:1px solid rgba(36,31,22,0.2);color:rgba(36,31,22,0.6);padding:12px 20px;border-radius:10px;font-weight:600;font-size:0.82rem;cursor:pointer;">Restaurar</button>
             </div>
           </div>
-        </div>
+        </sc-if>
 
-        <div id="tj-preview-wrap" style="display:none;margin-bottom:14px;">
-          <img id="tj-preview-img" src="" alt="Preview" style="width:100%;max-width:220px;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:1px solid rgba(255,215,0,0.3);">
-          <button onclick="clearTjImg()" style="display:block;margin-top:7px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);font-size:0.7rem;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;">✕ Quitar imagen</button>
-        </div>
+        <!-- AVATAR CHAT -->
+        <sc-if value="{{ isAvatar }}" hint-placeholder-val="{{ false }}">
+          <p style="color:rgba(36,31,22,0.55);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">La foto del asistente virtual del chat, en la web.</p>
+          <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:20px;padding:26px;">
+            <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
+              <div style="width:84px;height:84px;border-radius:50%;overflow:hidden;border:2px solid #C6A14B;background:#FBF8F2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <sc-if value="{{ hasAvatar }}" hint-placeholder-val="{{ false }}">
+                  <img src="{{ avatarSrc }}" style="width:100%;height:100%;object-fit:cover;" onError="this.style.display='none'"/>
+                </sc-if>
+                <sc-if value="{{ noAvatar }}" hint-placeholder-val="{{ true }}">
+                  <span style="font-size:1.8rem;">🤖</span>
+                </sc-if>
+              </div>
+              <div style="font-size:0.82rem;color:rgba(36,31,22,0.55);line-height:1.5;">Aparece en el botón flotante del chat y en su cabecera.</div>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button onClick="{{ pickAvatar }}" style="background:#C6A14B;color:#241F16;border:none;padding:12px 22px;border-radius:10px;font-weight:800;font-size:0.82rem;cursor:pointer;">Subir foto</button>
+              <button onClick="{{ clearAvatar }}" style="background:transparent;border:1px solid rgba(36,31,22,0.2);color:rgba(36,31,22,0.6);padding:12px 20px;border-radius:10px;font-weight:600;font-size:0.82rem;cursor:pointer;">Restaurar</button>
+            </div>
+          </div>
+        </sc-if>
 
-        <button onclick="saveTrabajo()" class="adm-btn">💾 Añadir a la galería</button>
-      </div>
+        <!-- CATEGORIAS -->
+        <sc-if value="{{ isCategorias }}" hint-placeholder-val="{{ false }}">
+          <p style="color:rgba(36,31,22,0.55);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">Los oficios que se muestran en la web. Añade uno nuevo (aunque sea un negocio distinto en el futuro) y aparecerá automáticamente como categoría, filtro y opción de contacto.</p>
 
-      <!-- Lista de trabajos existentes -->
-      <div class="card" style="margin-top:0;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-          <span class="adm-lbl" style="margin:0;">Trabajos en la galería</span>
-          <button onclick="clearAllTj()" style="background:transparent;border:1px solid rgba(255,60,60,0.4);color:rgba(255,90,90,0.8);font-size:0.62rem;padding:5px 10px;border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;">🗑 Borrar todos</button>
-        </div>
-        <div id="tj-list" style="display:flex;flex-direction:column;gap:10px;">
-          <!-- rendered by JS -->
-        </div>
+          <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:20px;padding:26px;margin-bottom:20px;">
+            <div style="font-size:0.68rem;letter-spacing:2px;color:#9c7d34;font-weight:700;text-transform:uppercase;margin-bottom:14px;">Nueva categoría</div>
+            <div style="display:grid;grid-template-columns:70px 1fr;gap:10px;margin-bottom:10px;">
+              <input placeholder="🏗️" value="{{ catIcon }}" onChange="{{ onCatIcon }}" style="text-align:center;font-size:1.2rem;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px;"/>
+              <input placeholder="Nombre del oficio o negocio (ej: Venta de ganado)" value="{{ catName }}" onChange="{{ onCatName }}" style="background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;"/>
+            </div>
+            <input placeholder="Teléfono WhatsApp (ej: 34600000000)" value="{{ catPhone }}" onChange="{{ onCatPhone }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;margin-bottom:14px;"/>
+            <button onClick="{{ addCategory }}" style="width:100%;background:#C6A14B;color:#241F16;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:0.85rem;cursor:pointer;">Añadir categoría</button>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:12px;background:#FFFFFF;border:1px solid rgba(184,146,58,0.4);border-radius:14px;padding:14px 16px;">
+                <div style="width:42px;height:42px;border-radius:10px;background:#F2ECDD;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">{{ cat.icon }}</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:0.9rem;font-weight:700;">{{ cat.name }}</div>
+                  <div style="font-size:0.74rem;color:rgba(36,31,22,0.45);">{{ cat.phone }}</div>
+                </div>
+                <button onClick="{{ cat.onDelete }}" style="background:transparent;border:1px solid rgba(190,60,60,0.4);color:rgba(160,50,50,0.8);padding:8px 12px;border-radius:8px;font-size:0.76rem;cursor:pointer;">Eliminar</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- TRABAJOS -->
+        <sc-if value="{{ isTrabajos }}" hint-placeholder-val="{{ false }}">
+          <p style="color:rgba(36,31,22,0.55);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">Añade trabajos reales — foto, o el enlace de cualquier página (Drive, YouTube, tu tienda, una web de productos...). Con Drive/YouTube el sistema detecta la miniatura sola; con cualquier otro enlace, sube tú la foto y quedará igual: la tarjeta se crea sola y al tocarla abre esa página.</p>
+
+          <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:20px;padding:26px;margin-bottom:20px;">
+            <div style="font-size:0.68rem;letter-spacing:2px;color:#9c7d34;font-weight:700;text-transform:uppercase;margin-bottom:14px;">Nuevo trabajo</div>
+
+            <select value="{{ tjCat }}" onChange="{{ onTjCat }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px;font-size:0.88rem;margin-bottom:10px;">
+              <sc-for list="{{ categoryOptions }}" as="opt" hint-placeholder-count="4">
+                <option value="{{ opt.id }}">{{ opt.icon }} {{ opt.name }}</option>
+              </sc-for>
+            </select>
+
+            <input placeholder="Título del trabajo" value="{{ tjTitle }}" onChange="{{ onTjTitle }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;margin-bottom:10px;"/>
+            <input placeholder="Descripción breve (opcional)" value="{{ tjDesc }}" onChange="{{ onTjDesc }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;margin-bottom:10px;"/>
+            <input placeholder="Enlace (Drive, YouTube o cualquier página — opcional)" value="{{ tjLink }}" onChange="{{ onTjLink }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;margin-bottom:14px;"/>
+
+            <div style="display:flex;gap:10px;margin-bottom:14px;">
+              <button onClick="{{ pickTrabajo }}" style="background:#C6A14B;color:#241F16;border:none;padding:12px 20px;border-radius:10px;font-weight:800;font-size:0.82rem;cursor:pointer;">Subir foto</button>
+              <sc-if value="{{ tjHasImg }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ clearTjImg }}" style="background:transparent;border:1px solid rgba(36,31,22,0.2);color:rgba(36,31,22,0.6);padding:12px 18px;border-radius:10px;font-weight:600;font-size:0.82rem;cursor:pointer;">Quitar foto</button>
+              </sc-if>
+            </div>
+
+            <sc-if value="{{ tjHasImg }}" hint-placeholder-val="{{ false }}">
+              <img src="{{ tjImg }}" style="width:140px;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:1px solid rgba(184,146,58,0.55);margin-bottom:14px;display:block;" onError="this.style.display='none'"/>
+            </sc-if>
+            <sc-if value="{{ tjLinkPreview }}" hint-placeholder-val="{{ false }}">
+              <img src="{{ tjLinkThumb }}" style="width:140px;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:1px solid rgba(184,146,58,0.55);margin-bottom:14px;display:block;" onError="this.style.display='none'"/>
+            </sc-if>
+
+            <button onClick="{{ addTrabajo }}" style="width:100%;background:#C6A14B;color:#241F16;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:0.85rem;cursor:pointer;">Añadir a la galería</button>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div style="font-size:0.68rem;letter-spacing:2px;color:#9c7d34;font-weight:700;text-transform:uppercase;">Trabajos en la galería</div>
+            <button onClick="{{ clearAllTrabajos }}" style="background:transparent;border:1px solid rgba(190,60,60,0.4);color:rgba(160,50,50,0.8);padding:6px 12px;border-radius:8px;font-size:0.72rem;cursor:pointer;">Borrar todos</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ portfolio }}" as="job" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:12px;background:#FFFFFF;border:1px solid rgba(184,146,58,0.4);border-radius:14px;padding:12px 14px;">
+                <sc-if value="{{ job.hasImg }}" hint-placeholder-val="{{ false }}">
+                  <img src="{{ job.imgSrc }}" style="width:46px;height:46px;object-fit:cover;border-radius:8px;flex-shrink:0;" onError="this.style.display='none'"/>
+                </sc-if>
+                <sc-if value="{{ job.noImg }}" hint-placeholder-val="{{ true }}">
+                  <div style="width:46px;height:46px;border-radius:8px;background:#F2ECDD;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">{{ job.catIcon }}</div>
+                </sc-if>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:0.62rem;color:#9c7d34;font-weight:700;letter-spacing:1px;text-transform:uppercase;">{{ job.catIcon }} {{ job.catName }}</div>
+                  <div style="font-size:0.86rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ job.title }}</div>
+                  <sc-if value="{{ job.hasLink }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:0.7rem;color:#9c7d34;">🔗 con enlace</div>
+                  </sc-if>
+                </div>
+                <button onClick="{{ job.onDelete }}" style="background:transparent;border:1px solid rgba(190,60,60,0.4);color:rgba(160,50,50,0.8);padding:7px 11px;border-radius:8px;font-size:0.74rem;cursor:pointer;flex-shrink:0;">Eliminar</button>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noPortfolio }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center;padding:30px;color:rgba(36,31,22,0.4);font-size:0.82rem;">No hay trabajos añadidos. Se muestran los ejemplos por defecto en la web.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- CITAS -->
+        <sc-if value="{{ isCitas }}" hint-placeholder-val="{{ false }}">
+          <p style="color:rgba(36,31,22,0.55);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">Citas reservadas desde la web, en tiempo real desde cualquier dispositivo.</p>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ appointments }}" as="a" hint-placeholder-count="3">
+              <div style="{{ a.cardStyle }}">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;">
+                  <div style="font-size:0.62rem;color:#9c7d34;font-weight:700;letter-spacing:1px;text-transform:uppercase;">{{ a.catName }}</div>
+                  <div style="{{ a.statusStyle }}">{{ a.statusLabel }}</div>
+                </div>
+                <div style="font-size:0.95rem;font-weight:700;margin-bottom:2px;">{{ a.name }} · {{ a.phone }}</div>
+                <div style="font-size:0.85rem;color:rgba(36,31,22,0.6);margin-bottom:4px;">📅 {{ a.date }} · 🕐 {{ a.time }}</div>
+                <sc-if value="{{ a.hasAddress }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:0.8rem;color:rgba(36,31,22,0.55);margin-bottom:4px;">📍 {{ a.address }}</div>
+                </sc-if>
+                <sc-if value="{{ a.hasNote }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:0.8rem;color:rgba(36,31,22,0.5);margin-bottom:10px;">"{{ a.note }}"</div>
+                </sc-if>
+                <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+                  <a href="{{ a.waLink }}" target="_blank" style="background:#C6A14B;color:#241F16;padding:8px 14px;border-radius:8px;font-size:0.76rem;font-weight:700;">Contactar</a>
+                  <sc-if value="{{ a.hasMap }}" hint-placeholder-val="{{ false }}">
+                    <a href="{{ a.mapLink }}" target="_blank" style="background:transparent;border:1px solid rgba(198,161,75,0.6);color:#9c7d34;padding:8px 14px;border-radius:8px;font-size:0.76rem;font-weight:700;">📍 Mapa</a>
+                  </sc-if>
+                  <sc-if value="{{ a.isPending }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ a.onConfirm }}" style="background:transparent;border:1px solid rgba(198,161,75,0.5);color:#9c7d34;padding:8px 14px;border-radius:8px;font-size:0.76rem;font-weight:700;cursor:pointer;">Confirmar</button>
+                  </sc-if>
+                  <button onClick="{{ a.onDelete }}" style="background:transparent;border:1px solid rgba(190,60,60,0.4);color:rgba(160,50,50,0.8);padding:8px 14px;border-radius:8px;font-size:0.76rem;cursor:pointer;">Eliminar</button>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noAppointments }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center;padding:30px;color:rgba(36,31,22,0.4);font-size:0.82rem;">No hay citas reservadas todavía.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- BLOQUES -->
+        <sc-if value="{{ isBloques }}" hint-placeholder-val="{{ false }}">
+          <p style="color:rgba(36,31,22,0.55);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">Crea tarjetas que aparecen en la sección "Descubre" de la web. Al tocarlas, abren un enlace (por ejemplo tu catálogo de Amway) o un bloque tuyo de HTML.</p>
+          <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:20px;padding:26px;margin-bottom:20px;">
+            <div style="font-size:0.68rem;letter-spacing:2px;color:#9c7d34;font-weight:700;text-transform:uppercase;margin-bottom:14px;">{{ bqFormTitle }}</div>
+            <input placeholder="Título (ej: Catálogo Amway)" value="{{ bqTitulo }}" onChange="{{ onBqTitulo }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;margin-bottom:10px;"/>
+            <input placeholder="Descripción (opcional)" value="{{ bqDesc }}" onChange="{{ onBqDesc }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;margin-bottom:14px;"/>
+            <div style="font-size:0.72rem;color:rgba(36,31,22,0.5);margin-bottom:8px;">¿Qué hace al tocarla?</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+              <sc-for list="{{ bqTipoOpts }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ bqShowEnlace }}" hint-placeholder-val="{{ true }}">
+              <input placeholder="https://www.amway.es/..." value="{{ bqEnlace }}" onChange="{{ onBqEnlace }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;margin-bottom:14px;"/>
+            </sc-if>
+            <sc-if value="{{ bqShowHtml }}" hint-placeholder-val="{{ false }}">
+              <textarea placeholder="Pega aquí tu código HTML..." value="{{ bqHtml }}" onChange="{{ onBqHtml }}" rows="4" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.8rem;margin-bottom:14px;resize:vertical;font-family:monospace;"></textarea>
+            </sc-if>
+            <div style="display:flex;gap:10px;margin-bottom:12px;">
+              <button onClick="{{ pickBloque }}" style="background:#C6A14B;color:#241F16;border:none;padding:12px 20px;border-radius:10px;font-weight:800;font-size:0.82rem;cursor:pointer;">Subir imagen</button>
+              <sc-if value="{{ bqHasImg }}" hint-placeholder-val="{{ false }}">
+                <img src="{{ bqImg }}" style="width:60px;height:46px;object-fit:cover;border-radius:8px;border:1px solid rgba(184,146,58,0.55);" onError="this.style.display='none'"/>
+              </sc-if>
+            </div>
+            <input placeholder="…o pega un link de Drive para la imagen" value="{{ bqDrive }}" onChange="{{ onBqDrive }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:11px 14px;font-size:0.82rem;margin-bottom:14px;"/>
+            <div style="display:flex;gap:10px;">
+              <button onClick="{{ saveBloque }}" style="flex:1;background:#C6A14B;color:#241F16;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:0.85rem;cursor:pointer;">{{ bqSaveLabel }}</button>
+              <sc-if value="{{ bqEditing }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ cancelBloque }}" style="background:transparent;border:1px solid rgba(36,31,22,0.2);color:rgba(36,31,22,0.6);padding:13px 18px;border-radius:10px;font-weight:600;font-size:0.82rem;cursor:pointer;">Cancelar</button>
+              </sc-if>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ bloquesList }}" as="b" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:12px;background:#FFFFFF;border:1px solid rgba(184,146,58,0.4);border-radius:14px;padding:12px 14px;">
+                <div style="width:52px;height:44px;border-radius:8px;background-image:url('{{ b.img }}');background-size:cover;background-position:center;background-color:#F2ECDD;flex-shrink:0;"></div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:0.88rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ b.titulo }}</div>
+                  <div style="font-size:0.66rem;color:#9c7d34;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;">{{ b.tipoLabel }}</div>
+                </div>
+                <button onClick="{{ b.onEdit }}" style="background:transparent;border:1px solid rgba(184,146,58,0.5);color:#9c7d34;padding:7px 11px;border-radius:8px;font-size:0.74rem;cursor:pointer;">Editar</button>
+                <button onClick="{{ b.onDelete }}" style="background:transparent;border:1px solid rgba(190,60,60,0.4);color:rgba(160,50,50,0.8);padding:7px 11px;border-radius:8px;font-size:0.74rem;cursor:pointer;">Eliminar</button>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noBloques }}" hint-placeholder-val="{{ true }}">
+              <div style="text-align:center;padding:30px;color:rgba(36,31,22,0.4);font-size:0.82rem;">Aún no has creado bloques.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- AGENDA -->
+        <sc-if value="{{ isAgenda }}" hint-placeholder-val="{{ false }}">
+          <p style="color:rgba(36,31,22,0.55);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">Tu agenda privada de fechas importantes. Con "Añadir a mi calendario" tu móvil te avisa el día, aunque la app esté cerrada.</p>
+          <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:20px;padding:26px;margin-bottom:20px;">
+            <div style="font-size:0.68rem;letter-spacing:2px;color:#9c7d34;font-weight:700;text-transform:uppercase;margin-bottom:14px;">Nueva fecha</div>
+            <input type="date" value="{{ feFecha }}" onChange="{{ onFeFecha }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;margin-bottom:10px;"/>
+            <input placeholder="Ej: Cumple de María · llamar a Lucía" value="{{ feNota }}" onChange="{{ onFeNota }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;margin-bottom:14px;"/>
+            <button onClick="{{ addFecha }}" style="width:100%;background:#C6A14B;color:#241F16;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:0.85rem;cursor:pointer;">＋ Añadir recordatorio</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ fechasList }}" as="f" hint-placeholder-count="3">
+              <div style="display:flex;align-items:flex-start;gap:14px;background:#FFFFFF;border:1px solid {{ f.border }};border-radius:14px;padding:14px 16px;">
+                <div style="text-align:center;flex-shrink:0;min-width:46px;">
+                  <div style="font-size:1.4rem;font-weight:800;color:#9c7d34;line-height:1;">{{ f.dia }}</div>
+                  <div style="font-size:0.58rem;color:rgba(36,31,22,0.45);text-transform:uppercase;letter-spacing:0.5px;">{{ f.mes }}</div>
+                </div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:0.88rem;color:#241F16;line-height:1.4;">{{ f.nota }}</div>
+                  <sc-if value="{{ f.soon }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:0.7rem;color:#9c7d34;font-weight:700;margin-top:3px;">🔔 {{ f.soonLabel }}</div>
+                  </sc-if>
+                  <button onClick="{{ f.onCal }}" style="margin-top:9px;background:transparent;border:1px solid rgba(198,161,75,0.6);color:#9c7d34;font-size:0.72rem;font-weight:700;padding:6px 12px;border-radius:8px;cursor:pointer;">📅 Añadir a mi calendario</button>
+                </div>
+                <button onClick="{{ f.onDelete }}" style="background:transparent;border:1px solid rgba(190,60,60,0.4);color:rgba(160,50,50,0.8);padding:7px 11px;border-radius:8px;font-size:0.74rem;cursor:pointer;flex-shrink:0;">Eliminar</button>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noFechas }}" hint-placeholder-val="{{ true }}">
+              <div style="text-align:center;padding:30px;color:rgba(36,31,22,0.4);font-size:0.82rem;">No tienes recordatorios todavía.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- VISITAS -->
+        <sc-if value="{{ isVisitas }}" hint-placeholder-val="{{ false }}">
+          <p style="color:rgba(36,31,22,0.55);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">Quién entra a tu web y desde qué ciudad (aproximada).</p>
+          <div style="font-size:0.68rem;letter-spacing:2px;color:#9c7d34;font-weight:700;text-transform:uppercase;margin-bottom:14px;">Visitas recientes · {{ visitasCount }}</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <sc-for list="{{ visitasList }}" as="v" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:12px;background:#FFFFFF;border:1px solid rgba(184,146,58,0.4);border-radius:12px;padding:12px 15px;">
+                <span style="font-size:1.2rem;">📍</span>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:0.88rem;font-weight:600;">{{ v.lugar }}</div>
+                  <div style="font-size:0.7rem;color:rgba(36,31,22,0.45);margin-top:2px;">{{ v.cuando }}</div>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noVisitas }}" hint-placeholder-val="{{ true }}">
+              <div style="text-align:center;padding:30px;color:rgba(36,31,22,0.4);font-size:0.82rem;">Todavía no hay visitas registradas.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- FOTOS -->
+        <sc-if value="{{ isFotos }}" hint-placeholder-val="{{ false }}">
+          <p style="color:rgba(36,31,22,0.55);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">Fotos que aparecen en la galería de la web. Puedes añadir pie de foto opcional a cada una.</p>
+          <div style="display:flex;gap:10px;margin-bottom:20px;">
+            <button onClick="{{ pickGalleryPhoto }}" style="background:#C6A14B;color:#241F16;border:none;padding:12px 22px;border-radius:10px;font-weight:800;font-size:0.82rem;cursor:pointer;">+ Subir foto</button>
+            <button onClick="{{ clearAllGallery }}" style="background:transparent;border:1px solid rgba(190,60,60,0.4);color:rgba(160,50,50,0.8);padding:12px 18px;border-radius:10px;font-size:0.82rem;cursor:pointer;">Borrar todas</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <sc-for list="{{ galleryList }}" as="g" hint-placeholder-count="3">
+              <div style="display:flex;gap:12px;align-items:flex-start;background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:14px;padding:12px 14px;">
+                <img src="{{ g.src }}" style="width:72px;height:72px;object-fit:cover;border-radius:10px;flex-shrink:0;border:1px solid rgba(184,146,58,0.3);" onError="this.style.display='none'"/>
+                <div style="flex:1;min-width:0;">
+                  <input placeholder="Pie de foto (opcional)" value="{{ g.caption }}" onChange="{{ g.onCaption }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.3);border-radius:8px;color:#241F16;padding:9px 12px;font-size:0.82rem;font-family:Outfit,sans-serif;margin-bottom:0;"/>
+                </div>
+                <button onClick="{{ g.onDelete }}" style="background:transparent;border:1px solid rgba(190,60,60,0.4);color:rgba(160,50,50,0.8);padding:7px 11px;border-radius:8px;font-size:0.74rem;cursor:pointer;flex-shrink:0;">Eliminar</button>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noGallery }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center;padding:30px;color:rgba(36,31,22,0.4);font-size:0.82rem;">No hay fotos en la galería todavía.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- FAQ -->
+        <sc-if value="{{ isFaq }}" hint-placeholder-val="{{ false }}">
+          <p style="color:rgba(36,31,22,0.55);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">Preguntas y respuestas que aparecen en la sección FAQ de la web.</p>
+          <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:20px;padding:26px;margin-bottom:20px;">
+            <div style="font-size:0.68rem;letter-spacing:2px;color:#9c7d34;font-weight:700;text-transform:uppercase;margin-bottom:14px;">Nueva pregunta</div>
+            <input placeholder="Pregunta" value="{{ faqQ }}" onChange="{{ onFaqQ }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;margin-bottom:10px;"/>
+            <textarea placeholder="Respuesta" value="{{ faqA }}" onChange="{{ onFaqA }}" rows="3" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;resize:vertical;margin-bottom:14px;font-family:Outfit,sans-serif;"></textarea>
+            <button onClick="{{ addFaq }}" style="width:100%;background:#C6A14B;color:#241F16;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:0.85rem;cursor:pointer;">Añadir pregunta</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ faqList }}" as="faq" hint-placeholder-count="3">
+              <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:14px;padding:16px 18px;">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px;">
+                  <div style="font-size:0.88rem;font-weight:700;color:#241F16;line-height:1.4;">{{ faq.q }}</div>
+                  <button onClick="{{ faq.onDelete }}" style="background:transparent;border:1px solid rgba(190,60,60,0.4);color:rgba(160,50,50,0.8);padding:6px 12px;border-radius:8px;font-size:0.74rem;cursor:pointer;flex-shrink:0;">Eliminar</button>
+                </div>
+                <div style="font-size:0.82rem;color:rgba(36,31,22,0.55);line-height:1.6;">{{ faq.a }}</div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noFaqs }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center;padding:30px;color:rgba(36,31,22,0.4);font-size:0.82rem;">No hay preguntas frecuentes añadidas todavía.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- OPINIONES -->
+        <sc-if value="{{ isOpiniones }}" hint-placeholder-val="{{ false }}">
+          <p style="color:rgba(36,31,22,0.55);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">Gestiona las opiniones que se muestran en la web. Añade las reales de tus clientes.</p>
+          <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:20px;padding:26px;margin-bottom:20px;">
+            <div style="font-size:0.68rem;letter-spacing:2px;color:#9c7d34;font-weight:700;text-transform:uppercase;margin-bottom:14px;">Nueva opinión</div>
+            <select value="{{ opCat }}" onChange="{{ onOpCat }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px;font-size:0.88rem;margin-bottom:10px;font-family:Outfit,sans-serif;">
+              <sc-for list="{{ categoryOptions }}" as="opt" hint-placeholder-count="4">
+                <option value="{{ opt.id }}">{{ opt.icon }} {{ opt.name }}</option>
+              </sc-for>
+            </select>
+            <input placeholder="Nombre del cliente" value="{{ opName }}" onChange="{{ onOpName }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;margin-bottom:10px;"/>
+            <textarea placeholder="Texto de la opinión" value="{{ opText }}" onChange="{{ onOpText }}" rows="3" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px 14px;font-size:0.88rem;resize:vertical;margin-bottom:10px;font-family:Outfit,sans-serif;"></textarea>
+            <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;">
+              <span style="font-size:0.82rem;color:rgba(36,31,22,0.55);">Valoración:</span>
+              <sc-for list="{{ starOptions }}" as="st" hint-placeholder-count="5">
+                <button onClick="{{ st.onClick }}" style="{{ st.style }}">{{ st.label }}</button>
+              </sc-for>
+            </div>
+            <button onClick="{{ addTestimonial }}" style="width:100%;background:#C6A14B;color:#241F16;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:0.85rem;cursor:pointer;">Añadir opinión</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ testimonialList }}" as="op" hint-placeholder-count="3">
+              <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:14px;padding:16px 18px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;">
+                  <div style="font-size:0.82rem;font-weight:700;">{{ op.name }} <span style="color:#C6A14B;letter-spacing:1px;">{{ op.starsStr }}</span></div>
+                  <button onClick="{{ op.onDelete }}" style="background:transparent;border:1px solid rgba(190,60,60,0.4);color:rgba(160,50,50,0.8);padding:6px 12px;border-radius:8px;font-size:0.74rem;cursor:pointer;">Eliminar</button>
+                </div>
+                <div style="font-size:0.8rem;color:rgba(36,31,22,0.55);font-style:italic;">"{{ op.text }}"</div>
+                <div style="font-size:0.7rem;color:#9C7A2E;margin-top:6px;">{{ op.catName }}</div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noTestimonials }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center;padding:30px;color:rgba(36,31,22,0.4);font-size:0.82rem;">No hay opiniones añadidas todavía.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- BACKUP -->
+        <sc-if value="{{ isBackup }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:20px;padding:26px;margin-bottom:20px;">
+            <div style="font-size:0.68rem;letter-spacing:2px;color:#9c7d34;font-weight:700;text-transform:uppercase;margin-bottom:14px;">Copia de seguridad</div>
+            <p style="color:rgba(36,31,22,0.55);font-size:0.85rem;line-height:1.6;margin-bottom:16px;">Todo se guarda en este dispositivo. Copia tus datos por si cambias de móvil.</p>
+            <button onClick="{{ exportData }}" style="width:100%;background:transparent;border:1px solid rgba(198,161,75,0.5);color:#9c7d34;font-weight:700;padding:13px;border-radius:10px;cursor:pointer;font-size:0.85rem;">Copiar mis datos</button>
+          </div>
+          <div style="background:#FFFFFF;border:1px solid rgba(184,146,58,0.45);border-radius:20px;padding:26px;">
+            <div style="font-size:0.68rem;letter-spacing:2px;color:#9c7d34;font-weight:700;text-transform:uppercase;margin-bottom:14px;">Restaurar datos</div>
+            <textarea placeholder="Pega aquí el backup..." rows="3" value="{{ importText }}" onChange="{{ onImportChange }}" style="width:100%;background:#FBF8F2;border:1px solid rgba(184,146,58,0.45);border-radius:10px;color:#241F16;padding:12px;font-size:0.82rem;margin-bottom:12px;resize:vertical;"></textarea>
+            <button onClick="{{ importBackup }}" style="width:100%;background:transparent;border:1px solid rgba(198,161,75,0.5);color:#9c7d34;font-weight:700;padding:13px;border-radius:10px;cursor:pointer;font-size:0.85rem;">Restaurar backup</button>
+          </div>
+        </sc-if>
+
       </div>
     </div>
+  </sc-if>
 
-  </div>
+  <input type="file" ref="{{ fileInputRef }}" accept="image/*" style="display:none;" onChange="{{ handleFile }}"/>
 </div>
 
-<!-- Hidden file input -->
-<input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleFile(event)">
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PIN = '0824';
 
-<script>
-var PIN = '0824';
-var _pending = null;
-
-function doUnlock(){
-  var v = document.getElementById('pinInput').value;
-  if(v === PIN){
-    document.getElementById('lockScreen').style.display='none';
-    document.getElementById('adminPanel').classList.remove('hidden');
-    loadAll();
-  } else {
-    alert('Clave incorrecta.');
-    document.getElementById('pinInput').value='';
-  }
-}
-document.getElementById('pinInput').addEventListener('keydown',function(e){if(e.key==='Enter')doUnlock();});
-
-function setTab(name){
-  ['portada','avatar','telefonos','app','trabajos'].forEach(function(t){
-    document.getElementById('sec-'+t).classList.add('hidden');
-    document.getElementById('tab-'+t).classList.remove('active');
-  });
-  document.getElementById('sec-'+name).classList.remove('hidden');
-  document.getElementById('tab-'+name).classList.add('active');
-}
-
-/* ── Images ── */
-function compress(file, cb){
-  var img = new Image(), url = URL.createObjectURL(file);
-  img.onload = function(){
-    var max=1100, w=img.width, h=img.height, sc=Math.min(1,max/Math.max(w,h));
-    var c=document.createElement('canvas'); c.width=Math.round(w*sc); c.height=Math.round(h*sc);
-    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-    URL.revokeObjectURL(url); cb(c.toDataURL('image/jpeg',0.82));
+class Component extends DCLogic {
+  state = {
+    unlocked: false, pin: '',
+    tab: 'portada',
+    categories: [], portfolio: [], appointments: [], testimonials: [], gallery: [], faqs: [],
+    bloques: [], fechas: [], visitas: [],
+    fbUser: null, fbEmail: '', fbPass: '', fbErr: '',
+    bqId: null, bqTitulo: '', bqDesc: '', bqTipo: 'enlace', bqEnlace: '', bqHtml: '', bqImg: '', bqDrive: '',
+    feFecha: '', feNota: '',
+    portada: null, avatar: null,
+    catIcon: '', catName: '', catPhone: '',
+    tjCat: '', tjTitle: '', tjDesc: '', tjImg: '', tjLink: '',
+    opName: '', opText: '', opCat: '', opStars: 5,
+    faqQ: '', faqA: '',
+    importText: '', pendingTarget: null
   };
-  img.src=url;
-}
-function handleFile(e){
-  var f=e.target&&e.target.files&&e.target.files[0]; if(!f)return;
-  compress(f,function(data){
-    if(_pending==='portada') savePortada(data);
-    else if(_pending==='avatar') saveAvatar(data);
-    else if(_pending==='trabajo') showTjPreview(data);
-    _pending=null;
-  });
-  e.target.value='';
-}
-function picker(type){ _pending=type; var i=document.getElementById('fileInput'); i.value=''; i.click(); }
-function pickerPortada(){ picker('portada'); }
-function pickerAvatar(){ picker('avatar'); }
 
-function driveUrl(url){
-  if(!url) return '';
-  var m=url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
-  if(m) return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1400';
-  m=url.match(/[?&]id=([\w-]+)/);
-  if(m && /drive\.google/.test(url)) return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1400';
-  return url;
-}
+  static defaultCategories = [
+    { id: 'peluqueria', name: 'Peluquería', icon: '💇', phone: '34604822265' },
+    { id: 'albanileria', name: 'Albañilería & Reformas', icon: '🏗️', phone: '34679753932' },
+    { id: 'hosteleria', name: 'Hostelería', icon: '🍽️', phone: '34679753932' },
+    { id: 'web', name: 'Páginas Web', icon: '💻', phone: '34679753932' }
+  ];
 
-function savePortada(data){
-  try{ localStorage.setItem('jf_portada',data); showPreviewPortada(data); alert('✅ Portada actualizada.'); }
-  catch(e){ alert('Sin espacio. Borra alguna foto antigua.'); }
-}
-function delPortada(){
-  localStorage.removeItem('jf_portada');
-  document.getElementById('previewPortada').style.display='none';
-  document.getElementById('previewPortadaEmpty').style.display='flex';
-  alert('↩ Portada restaurada a la original.');
-}
-function drivePortada(){
-  var v=document.getElementById('drivePortada').value.trim();
-  if(!v){alert('Pega un link de Drive.');return;}
-  savePortada(driveUrl(v));
-}
-function showPreviewPortada(src){
-  var img=document.getElementById('previewPortada');
-  img.src=src; img.style.display='block';
-  document.getElementById('previewPortadaEmpty').style.display='none';
-}
+  static mediaThumb(link) {
+    if (!link) return null;
+    let m = link.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{6,})/);
+    if (m) return `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg`;
+    m = link.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=)([a-zA-Z0-9_-]+)/);
+    if (m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1000`;
+    return null;
+  }
 
-function saveAvatar(data){
-  try{ localStorage.setItem('jf_chatbot_avatar',data); showPreviewAvatar(data); alert('✅ Foto de chat actualizada.'); }
-  catch(e){ alert('Sin espacio.'); }
-}
-function delAvatar(){
-  localStorage.removeItem('jf_chatbot_avatar');
-  document.getElementById('previewAvatar').style.display='none';
-  document.getElementById('previewAvatarEmpty').style.display='flex';
-  alert('↩ Foto del chat restaurada a la original.');
-}
-function dodriveAvatar(){
-  var v=document.getElementById('driveAvatar').value.trim();
-  if(!v){alert('Pega un link de Drive.');return;}
-  saveAvatar(driveUrl(v));
-}
-function showPreviewAvatar(src){
-  var img=document.getElementById('previewAvatar');
-  img.src=src; img.style.display='block';
-  document.getElementById('previewAvatarEmpty').style.display='none';
-}
+  componentDidMount() {
+    this.fileInputRef = React.createRef();
+    this.load();
+    this._onStorage = () => this.load();
+    window.addEventListener('storage', this._onStorage);
+    this._subs = [];
+    try {
+      if (window.FCF && window.FCF.ready()) {
+        this._unsubAuth = window.FCF.onAuth(u => {
+          this.setState({ fbUser: u || null });
+          if (u) this.subscribeCloud();
+          else { this.unsubscribeCloud(); this.setState({ appointments: [], bloques: [], fechas: [], visitas: [] }); }
+        });
+      }
+    } catch (e) {}
+  }
+  componentWillUnmount() {
+    window.removeEventListener('storage', this._onStorage);
+    this.unsubscribeCloud();
+    if (this._unsubAuth) { this._unsubAuth(); this._unsubAuth = null; }
+  }
+  subscribeCloud() {
+    if (this._subs && this._subs.length) return;
+    try {
+      this._subs = [
+        window.FCF.watchCitas('jonatan', arr => { if (arr) this.setState({ appointments: arr }); }),
+        window.FCF.watchBloques('jonatan', arr => { if (arr) this.setState({ bloques: arr }); }),
+        window.FCF.watchFechas('jonatan', arr => { if (arr) this.setState({ fechas: arr }); }),
+        window.FCF.watchVisitas('jonatan', arr => { if (arr) this.setState({ visitas: arr }); })
+      ];
+    } catch (e) {}
+  }
+  unsubscribeCloud() { (this._subs || []).forEach(u => { try { u(); } catch (e) {} }); this._subs = []; }
 
-/* ── Phones ── */
-function savePhones(){
-  var a=document.getElementById('ph-albanileria').value.trim();
-  var w=document.getElementById('ph-web').value.trim();
-  var p=document.getElementById('ph-peluqueria').value.trim();
-  var obj={albanileria:a||null, hosteleria:a||null, web:w||null, peluqueria:p||null};
-  localStorage.setItem('jf_phones',JSON.stringify(obj));
-  alert('✅ Teléfonos guardados. Se aplicarán en el próximo acceso a la página.');
-}
+  fbLogin() {
+    const { fbEmail, fbPass } = this.state;
+    if (!fbEmail.trim() || !fbPass) { this.setState({ fbErr: 'Escribe tu correo y contraseña.' }); return; }
+    if (!window.FCF || !window.FCF.ready()) { this.setState({ fbErr: 'No hay conexión con la nube.' }); return; }
+    this.setState({ fbErr: '' });
+    window.FCF.signIn(fbEmail.trim(), fbPass).then(() => this.setState({ fbPass: '' })).catch(e => {
+      let m = 'No se pudo entrar. Revisa tu correo y contraseña.';
+      if (e && e.code === 'auth/user-not-found') m = 'Ese correo no está registrado todavía en Firebase.';
+      if (e && e.code === 'auth/wrong-password') m = 'Contraseña incorrecta.';
+      if (e && e.code === 'auth/invalid-email') m = 'El correo no es válido.';
+      this.setState({ fbErr: m });
+    });
+  }
+  fbLogout() { try { if (window.FCF) window.FCF.signOut(); } catch (e) {} }
 
-/* ── Backup ── */
-function exportData(){
-  var keys=['jf_portada','jf_chatbot_avatar','jf_phones'];
-  var out={};
-  keys.forEach(function(k){ var v=localStorage.getItem(k); if(v) out[k]=v; });
-  var txt=JSON.stringify(out);
-  try{
-    navigator.clipboard.writeText(txt).then(function(){alert('✅ Datos copiados al portapapeles. Pégalos en un documento para guardarlos.');});
-  }catch(e){
-    prompt('Copia este texto y guárdalo:',txt);
+  load() {
+    let categories = Component.defaultCategories;
+    try { const raw = localStorage.getItem('jf_categories'); if (raw) { const p = JSON.parse(raw); if (Array.isArray(p) && p.length) categories = p; } } catch (e) {}
+    let portfolio = [];
+    try { const raw = localStorage.getItem('jf_portfolio'); if (raw) portfolio = JSON.parse(raw) || []; } catch (e) {}
+    let testimonials = [];
+    try { const raw = localStorage.getItem('jf_testimonials'); if (raw) testimonials = JSON.parse(raw) || []; } catch (e) {}
+    let gallery = [];
+    try { const raw = localStorage.getItem('jf_gallery'); if (raw) gallery = JSON.parse(raw) || []; } catch (e) {}
+    let faqs = [];
+    try { const raw = localStorage.getItem('jf_faqs'); if (raw) faqs = JSON.parse(raw) || []; } catch (e) {}
+    let portada = null;
+    try { portada = localStorage.getItem('jf_portada'); } catch (e) {}
+    let avatar = null;
+    try { avatar = localStorage.getItem('jf_chatbot_avatar'); } catch (e) {}
+    this.setState(s => ({ categories, portfolio, testimonials, gallery, faqs, portada, avatar, tjCat: s.tjCat || (categories[0] && categories[0].id) || '', opCat: s.opCat || (categories[0] && categories[0].id) || '' }));
+  }
+
+  saveCategories(cats) { localStorage.setItem('jf_categories', JSON.stringify(cats)); this.setState({ categories: cats }); }
+  savePortfolio(arr) { localStorage.setItem('jf_portfolio', JSON.stringify(arr)); this.setState({ portfolio: arr }); }
+  saveTestimonials(arr) { localStorage.setItem('jf_testimonials', JSON.stringify(arr)); this.setState({ testimonials: arr }); }
+  saveGallery(arr) { localStorage.setItem('jf_gallery', JSON.stringify(arr)); this.setState({ gallery: arr }); }
+  saveFaqs(arr) { localStorage.setItem('jf_faqs', JSON.stringify(arr)); this.setState({ faqs: arr }); }
+  addFaq() {
+    const { faqQ, faqA } = this.state;
+    if (!faqQ.trim() || !faqA.trim()) { alert('Rellena la pregunta y la respuesta.'); return; }
+    this.saveFaqs([...this.state.faqs, { id: Date.now(), q: faqQ.trim(), a: faqA.trim() }]);
+    this.setState({ faqQ: '', faqA: '' });
+  }
+  deleteFaq(id) { if (!confirm('¿Eliminar esta pregunta?')) return; this.saveFaqs(this.state.faqs.filter(f => f.id !== id)); }
+  deleteGalleryPhoto(id) { if (!confirm('¿Eliminar esta foto?')) return; this.saveGallery(this.state.gallery.filter(g => g.id !== id)); }
+  updateGalleryCaption(id, caption) { this.saveGallery(this.state.gallery.map(g => g.id === id ? { ...g, caption } : g)); }
+
+  addTestimonial() {
+    const { opName, opText, opCat, opStars } = this.state;
+    if (!opName.trim() || !opText.trim()) { alert('Rellena nombre y opinión.'); return; }
+    this.saveTestimonials([...this.state.testimonials, { id: Date.now(), catId: opCat, name: opName.trim(), text: opText.trim(), stars: opStars }]);
+    this.setState({ opName: '', opText: '' });
+  }
+  deleteTestimonial(id) {
+    if (!confirm('¿Eliminar esta opinión?')) return;
+    this.saveTestimonials(this.state.testimonials.filter(t => t.id !== id));
+  }
+
+  addCategory() {
+    const { catName, catIcon, catPhone, categories } = this.state;
+    if (!catName.trim()) { alert('Escribe el nombre del oficio.'); return; }
+    const id = catName.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now().toString(36);
+    const cat = { id, name: catName.trim(), icon: catIcon.trim() || '⭐', phone: catPhone.trim() };
+    this.saveCategories([...categories, cat]);
+    this.setState({ catName: '', catIcon: '', catPhone: '' });
+  }
+  deleteCategory(id) {
+    if (!confirm('¿Eliminar esta categoría? Los trabajos ya guardados en ella permanecerán pero sin oficio asignado.')) return;
+    this.saveCategories(this.state.categories.filter(c => c.id !== id));
+  }
+
+  pick(target) { this.state.pendingTarget = target; this.fileInputRef.current.click(); }
+
+  handleFile(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const max = 1100, sc = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      const data = c.toDataURL('image/jpeg', 0.82);
+      if (this.state.pendingTarget === 'portada') { localStorage.setItem('jf_portada', data); this.setState({ portada: data }); }
+      else if (this.state.pendingTarget === 'avatar') { localStorage.setItem('jf_chatbot_avatar', data); this.setState({ avatar: data }); }
+      else if (this.state.pendingTarget === 'trabajo') { this.setState({ tjImg: data }); }
+      else if (this.state.pendingTarget === 'bloque') { this.setState({ bqImg: data }); }
+      else if (this.state.pendingTarget === 'gallery') { this.saveGallery([...this.state.gallery, { id: Date.now(), src: data, caption: '' }]); }
+    };
+    img.src = url;
+    e.target.value = '';
+  }
+
+  addTrabajo() {
+    const { tjCat, tjTitle, tjDesc, tjImg, tjLink, portfolio, categories } = this.state;
+    if (!tjTitle.trim()) { alert('Escribe un título para el trabajo.'); return; }
+    if (!tjCat) { alert('Selecciona una categoría.'); return; }
+    const arr = [...portfolio, { id: Date.now(), catId: tjCat, title: tjTitle.trim(), desc: tjDesc.trim(), img: tjImg || null, link: tjLink.trim() || null }];
+    this.savePortfolio(arr);
+    this.setState({ tjTitle: '', tjDesc: '', tjImg: '', tjLink: '' });
+  }
+  deleteTrabajo(id) {
+    if (!confirm('¿Eliminar este trabajo?')) return;
+    this.savePortfolio(this.state.portfolio.filter(p => p.id !== id));
+  }
+
+  confirmAppointment(id) { try { if (window.FCF) window.FCF.updateCita(id, { estado: 'confirmada' }).catch(() => {}); } catch (e) {} }
+  deleteAppointment(id) { if (!confirm('¿Eliminar esta cita?')) return; try { if (window.FCF) window.FCF.deleteCita(id).catch(() => {}); } catch (e) {} }
+
+  // ── Bloques ──
+  setBqTipo(t) { this.setState({ bqTipo: t }); }
+  pickBloque() { this.pick('bloque'); }
+  driveBloque() {
+    const v = (this.state.bqDrive || '').trim();
+    if (!v) return;
+    const m = v.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=)([a-zA-Z0-9_-]+)/);
+    const img = m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1400` : v;
+    this.setState({ bqImg: img, bqDrive: '' });
+  }
+  cancelBloque() { this.setState({ bqId: null, bqTitulo: '', bqDesc: '', bqTipo: 'enlace', bqEnlace: '', bqHtml: '', bqImg: '', bqDrive: '' }); }
+  saveBloque() {
+    const { bqId, bqTitulo, bqDesc, bqTipo, bqEnlace, bqHtml, bqImg } = this.state;
+    if (!bqTitulo.trim()) { alert('Escribe un título para la tarjeta.'); return; }
+    if ((bqTipo === 'enlace' || bqTipo === 'embed')) {
+      if (!bqEnlace.trim()) { alert('Pega el enlace (URL).'); return; }
+      if (!/^https?:\/\//i.test(bqEnlace.trim())) { alert('El enlace debe empezar por https://'); return; }
+    }
+    if (bqTipo === 'html' && !bqHtml.trim()) { alert('Pega el código HTML.'); return; }
+    if (!window.FCF || !window.FCF.ready()) { alert('No hay conexión con la nube.'); return; }
+    const rec = { origen: 'jonatan', titulo: bqTitulo.trim(), desc: bqDesc.trim(), tipo: bqTipo, img: bqImg || '', enlace: bqEnlace.trim(), html: bqHtml };
+    const done = () => this.cancelBloque();
+    if (bqId) window.FCF.updateBloque(bqId, rec).then(done).catch(() => alert('No se pudo guardar.'));
+    else window.FCF.addBloque(rec).then(done).catch(() => alert('No se pudo guardar.'));
+  }
+  editBloque(b) { this.setState({ bqId: b.id, bqTitulo: b.titulo || '', bqDesc: b.desc || '', bqTipo: b.tipo || 'enlace', bqEnlace: b.enlace || '', bqHtml: b.html || '', bqImg: b.img || '' }); }
+  deleteBloque(id) { if (!confirm('¿Borrar este bloque?')) return; try { window.FCF.deleteBloque(id).catch(() => {}); } catch (e) {} }
+
+  // ── Agenda ──
+  addFecha() {
+    const { feFecha, feNota } = this.state;
+    if (!feFecha) { alert('Elige una fecha.'); return; }
+    if (!feNota.trim()) { alert('Escribe una nota.'); return; }
+    if (!window.FCF || !window.FCF.ready()) { alert('No hay conexión con la nube.'); return; }
+    window.FCF.addFecha({ origen: 'jonatan', fecha: feFecha, nota: feNota.trim() }).then(() => this.setState({ feFecha: '', feNota: '' })).catch(() => alert('No se pudo guardar.'));
+  }
+  deleteFecha(id) { if (!confirm('¿Borrar este recordatorio?')) return; try { window.FCF.deleteFecha(id).catch(() => {}); } catch (e) {} }
+  addToCalendar(f) {
+    if (!f || !f.fecha) return;
+    const raw = f.fecha.replace(/-/g, '');
+    const d = new Date(f.fecha + 'T00:00:00'), nx = new Date(d.getTime() + 86400000);
+    const pad = n => String(n).padStart(2, '0');
+    const end = nx.getFullYear() + pad(nx.getMonth() + 1) + pad(nx.getDate());
+    const esc = t => String(t || '').replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n');
+    const now = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//JF//Agenda//ES', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT', 'UID:jf' + Date.now() + '@jf', 'DTSTAMP:' + now, 'DTSTART;VALUE=DATE:' + raw, 'DTEND;VALUE=DATE:' + end, 'SUMMARY:' + esc(f.nota || 'Recordatorio'), 'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(f.nota || 'Recordatorio'), 'TRIGGER:PT9H', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    try {
+      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'recordatorio.ics';
+      document.body.appendChild(a); a.click();
+      setTimeout(() => { try { document.body.removeChild(a); URL.revokeObjectURL(url); } catch (e) {} }, 800);
+    } catch (e) { alert('No se pudo abrir el calendario.'); }
+  }
+
+  renderVals() {
+    const s = this.state;
+    const catById = {}; s.categories.forEach(c => catById[c.id] = c);
+    const isCloud = ['citas', 'bloques', 'agenda', 'visitas'].indexOf(s.tab) >= 0;
+
+    const tabDefs = [
+      { id: 'citas', label: 'Citas', icon: '📅' },
+      { id: 'bloques', label: 'Bloques', icon: '🛍' },
+      { id: 'agenda', label: 'Agenda', icon: '🗓' },
+      { id: 'visitas', label: 'Visitas', icon: '📍' },
+      { id: 'portada', label: 'Portada', icon: '🖼' },
+      { id: 'avatar', label: 'Chat', icon: '🤖' },
+      { id: 'categorias', label: 'Categorías', icon: '🏷' },
+      { id: 'trabajos', label: 'Trabajos', icon: '📸' },
+      { id: 'fotos', label: 'Fotos', icon: '🖼' },
+      { id: 'faq', label: 'FAQ', icon: '❓' },
+      { id: 'opiniones', label: 'Opiniones', icon: '⭐' },
+      { id: 'backup', label: 'Backup', icon: '💾' }
+    ];
+    const tabs = tabDefs.map(t => ({
+      ...t,
+      onSelect: () => this.setState({ tab: t.id }),
+      style: { padding: '9px 18px', borderRadius: '100px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'Outfit,sans-serif', whiteSpace: 'nowrap', border: '1px solid rgba(184,146,58,0.55)', background: s.tab === t.id ? '#C6A14B' : 'transparent', color: s.tab === t.id ? '#241F16' : '#9c7d34' }
+    }));
+
+    const categories = s.categories.map(c => ({ ...c, onDelete: () => this.deleteCategory(c.id) }));
+    const categoryOptions = s.categories;
+
+    const portfolio = s.portfolio.slice().reverse().map(p => {
+      const cat = catById[p.catId] || { name: 'Sin categoría', icon: '⭐' };
+      const imgSrc = p.img || Component.mediaThumb(p.link);
+      return { ...p, catName: cat.name, catIcon: cat.icon, imgSrc, hasImg: !!imgSrc, noImg: !imgSrc, hasLink: !!p.link, onDelete: () => this.deleteTrabajo(p.id) };
+    });
+
+    const tjLinkThumb = Component.mediaThumb(s.tjLink);
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const tomorrowStr = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+    const appointments = s.appointments.slice().sort((a, b) => String((a.fecha || '') + (a.hora || '')).localeCompare(String((b.fecha || '') + (b.hora || '')))).map(a => {
+      const date = a.fecha || a.date || '';
+      const time = a.hora || a.time || '';
+      const name = a.nombre || a.name || 'Sin nombre';
+      const phoneRaw = a.telefono || a.phone || '';
+      const address = a.direccion || a.address || '';
+      const note = a.nota || a.note || '';
+      const catName = a.servicio || a.catName || '';
+      const phone = String(phoneRaw).replace(/\D/g, '');
+      const msg = encodeURIComponent(`Hola ${name}, te confirmamos tu cita de ${catName} el ${date} a las ${time}.`);
+      const isPending = a.estado !== 'confirmada' && a.status !== 'confirmada';
+      const hasMap = !!(a.coords && a.coords.lat != null && a.coords.lng != null);
+      return {
+        catName, name, phone: phoneRaw, date, time, address, note,
+        hasNote: !!note, hasAddress: !!address, isPending,
+        hasMap, mapLink: hasMap ? `https://www.google.com/maps?q=${a.coords.lat},${a.coords.lng}` : '#',
+        statusLabel: isPending ? 'Pendiente' : 'Confirmada',
+        statusStyle: { fontSize: '0.68rem', fontWeight: 700, padding: '3px 10px', borderRadius: '100px', background: isPending ? 'rgba(198,161,75,0.15)' : 'rgba(80,150,80,0.15)', color: isPending ? '#9c7d34' : '#3f7d3f' },
+        cardStyle: { background: '#FFFFFF', border: '1px solid rgba(184,146,58,0.4)', borderRadius: '14px', padding: '16px 18px' },
+        waLink: phone ? `https://wa.me/${phone}?text=${msg}` : '#',
+        onConfirm: () => this.confirmAppointment(a.id),
+        onDelete: () => this.deleteAppointment(a.id)
+      };
+    });
+
+    const tipoDefs = [{ id: 'enlace', label: '🔗 Abrir fuera' }, { id: 'embed', label: '🪟 Abrir dentro' }, { id: 'html', label: '</> HTML' }];
+    const bqTipoOpts = tipoDefs.map(t => {
+      const active = s.bqTipo === t.id;
+      return { label: t.label, onClick: () => this.setBqTipo(t.id), style: { padding: '8px 14px', borderRadius: '100px', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'Outfit,sans-serif', border: '1px solid rgba(184,146,58,0.55)', background: active ? '#C6A14B' : 'transparent', color: active ? '#241F16' : '#9c7d34' } };
+    });
+    const tipoLabel = tp => tp === 'html' ? 'Bloque HTML' : (tp === 'embed' ? 'Enlace (dentro)' : 'Enlace');
+    const bloquesList = (s.bloques || []).map(b => ({ titulo: b.titulo || 'Bloque', tipoLabel: tipoLabel(b.tipo), img: b.img || '', onEdit: () => this.editBloque(b), onDelete: () => this.deleteBloque(b.id) }));
+
+    const MESES = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const fechasList = (s.fechas || []).slice().sort((a, b) => String(a.fecha || '').localeCompare(String(b.fecha || ''))).map(f => {
+      const d = f.fecha ? new Date(f.fecha + 'T00:00:00') : null;
+      const dias = d ? Math.round((d - hoy) / 86400000) : null;
+      const soon = dias != null && dias >= 0 && dias <= 7;
+      return { dia: d ? String(d.getDate()) : '–', mes: d ? MESES[d.getMonth()] : '', nota: f.nota || '', soon, soonLabel: dias === 0 ? 'Hoy' : (dias === 1 ? 'Mañana' : 'En ' + dias + ' días'), border: soon ? 'rgba(198,161,75,0.7)' : 'rgba(184,146,58,0.4)', onCal: () => this.addToCalendar(f), onDelete: () => this.deleteFecha(f.id) };
+    });
+
+    const visitasList = (s.visitas || []).slice().sort((a, b) => { const ta = a.ts && a.ts.seconds ? a.ts.seconds : 0, tb = b.ts && b.ts.seconds ? b.ts.seconds : 0; return tb - ta; }).slice(0, 100).map(v => {
+      const lugar = [v.ciudad, v.region, v.pais].filter(Boolean).join(', ') || 'Ubicación desconocida';
+      let cuando = '';
+      if (v.ts && v.ts.seconds) { try { cuando = new Date(v.ts.seconds * 1000).toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) {} }
+      return { lugar, cuando };
+    });
+
+    return {
+      locked: !s.unlocked, unlocked: s.unlocked,
+      pin: s.pin, onPinChange: e => this.setState({ pin: e.target.value }),
+      onPinKey: e => { if (e.key === 'Enter') this.tryUnlock(); },
+      tryUnlock: () => { if (this.state.pin === PIN) this.setState({ unlocked: true }); else { alert('Clave incorrecta.'); this.setState({ pin: '' }); } },
+
+      tab: s.tab, tabs,
+      needCloudLogin: isCloud && !s.fbUser,
+      cloudBar: isCloud && !!s.fbUser,
+      isPortada: s.tab === 'portada', isAvatar: s.tab === 'avatar', isCategorias: s.tab === 'categorias', isTrabajos: s.tab === 'trabajos',
+      isCitas: s.tab === 'citas' && !!s.fbUser, isBloques: s.tab === 'bloques' && !!s.fbUser, isAgenda: s.tab === 'agenda' && !!s.fbUser, isVisitas: s.tab === 'visitas' && !!s.fbUser,
+      isFotos: s.tab === 'fotos', isFaq: s.tab === 'faq', isOpiniones: s.tab === 'opiniones', isBackup: s.tab === 'backup',
+
+      fbEmail: s.fbEmail, fbPass: s.fbPass,
+      onFbEmail: e => this.setState({ fbEmail: e.target.value }),
+      onFbPass: e => this.setState({ fbPass: e.target.value }),
+      onFbKey: e => { if (e.key === 'Enter') this.fbLogin(); },
+      onFbLogin: () => this.fbLogin(),
+      onFbLogout: () => this.fbLogout(),
+      hasFbErr: !!s.fbErr, fbErr: s.fbErr,
+
+      portadaSrc: s.portada, hasPortada: !!s.portada, noPortada: !s.portada,
+      pickPortada: () => this.pick('portada'),
+      clearPortada: () => { localStorage.removeItem('jf_portada'); this.setState({ portada: null }); },
+
+      avatarSrc: s.avatar, hasAvatar: !!s.avatar, noAvatar: !s.avatar,
+      pickAvatar: () => this.pick('avatar'),
+      clearAvatar: () => { localStorage.removeItem('jf_chatbot_avatar'); this.setState({ avatar: null }); },
+
+      catIcon: s.catIcon, catName: s.catName, catPhone: s.catPhone,
+      onCatIcon: e => this.setState({ catIcon: e.target.value }),
+      onCatName: e => this.setState({ catName: e.target.value }),
+      onCatPhone: e => this.setState({ catPhone: e.target.value }),
+      addCategory: () => this.addCategory(),
+      categories,
+
+      tjCat: s.tjCat, tjTitle: s.tjTitle, tjDesc: s.tjDesc, tjImg: s.tjImg, tjHasImg: !!s.tjImg,
+      tjLink: s.tjLink, tjLinkThumb, tjLinkPreview: !s.tjImg && !!tjLinkThumb,
+      onTjCat: e => this.setState({ tjCat: e.target.value }),
+      onTjTitle: e => this.setState({ tjTitle: e.target.value }),
+      onTjDesc: e => this.setState({ tjDesc: e.target.value }),
+      onTjLink: e => this.setState({ tjLink: e.target.value }),
+      pickTrabajo: () => this.pick('trabajo'),
+      clearTjImg: () => this.setState({ tjImg: '' }),
+      addTrabajo: () => this.addTrabajo(),
+      categoryOptions,
+      portfolio, noPortfolio: portfolio.length === 0,
+      clearAllTrabajos: () => { if (confirm('¿Borrar todos los trabajos?')) this.savePortfolio([]); },
+
+      appointments, noAppointments: appointments.length === 0,
+
+      bqFormTitle: s.bqId ? 'Editar bloque' : 'Nuevo bloque',
+      bqSaveLabel: s.bqId ? 'Guardar cambios' : 'Crear tarjeta',
+      bqEditing: !!s.bqId,
+      bqTitulo: s.bqTitulo, bqDesc: s.bqDesc, bqEnlace: s.bqEnlace, bqHtml: s.bqHtml, bqDrive: s.bqDrive,
+      bqImg: s.bqImg, bqHasImg: !!s.bqImg,
+      bqTipoOpts, bqShowEnlace: s.bqTipo === 'enlace' || s.bqTipo === 'embed', bqShowHtml: s.bqTipo === 'html',
+      onBqTitulo: e => this.setState({ bqTitulo: e.target.value }),
+      onBqDesc: e => this.setState({ bqDesc: e.target.value }),
+      onBqEnlace: e => this.setState({ bqEnlace: e.target.value }),
+      onBqHtml: e => this.setState({ bqHtml: e.target.value }),
+      onBqDrive: e => this.setState({ bqDrive: e.target.value }),
+      pickBloque: () => this.pickBloque(),
+      saveBloque: () => this.saveBloque(),
+      cancelBloque: () => this.cancelBloque(),
+      bloquesList, noBloques: bloquesList.length === 0,
+
+      feFecha: s.feFecha, feNota: s.feNota,
+      onFeFecha: e => this.setState({ feFecha: e.target.value }),
+      onFeNota: e => this.setState({ feNota: e.target.value }),
+      addFecha: () => this.addFecha(),
+      fechasList, noFechas: fechasList.length === 0,
+
+      visitasList, visitasCount: visitasList.length, noVisitas: visitasList.length === 0,
+
+      opName: s.opName, opText: s.opText, opCat: s.opCat, opStars: s.opStars,
+      onOpName: e => this.setState({ opName: e.target.value }),
+      onOpText: e => this.setState({ opText: e.target.value }),
+      onOpCat: e => this.setState({ opCat: e.target.value }),
+      starOptions: [1,2,3,4,5].map(n => ({
+        label: '★'.repeat(n),
+        onClick: () => this.setState({ opStars: n }),
+        style: { background: s.opStars === n ? '#C6A14B' : 'transparent', border: '1px solid rgba(184,146,58,0.55)', color: s.opStars === n ? '#241F16' : '#9c7d34', padding: '5px 10px', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', fontFamily: 'Outfit,sans-serif' }
+      })),
+      addTestimonial: () => this.addTestimonial(),
+      testimonialList: s.testimonials.map(t => ({ ...t, starsStr: '★'.repeat(t.stars || 5), catName: (catById[t.catId] || {}).name || '', onDelete: () => this.deleteTestimonial(t.id) })),
+      noTestimonials: s.testimonials.length === 0,
+
+      faqQ: s.faqQ, faqA: s.faqA,
+      onFaqQ: e => this.setState({ faqQ: e.target.value }),
+      onFaqA: e => this.setState({ faqA: e.target.value }),
+      addFaq: () => this.addFaq(),
+      faqList: s.faqs.map(f => ({ ...f, onDelete: () => this.deleteFaq(f.id) })),
+      noFaqs: s.faqs.length === 0,
+
+      galleryList: s.gallery.map(g => ({ ...g, onDelete: () => this.deleteGalleryPhoto(g.id), onCaption: e => this.updateGalleryCaption(g.id, e.target.value) })),
+      noGallery: s.gallery.length === 0,
+      pickGalleryPhoto: () => this.pick('gallery'),
+      clearAllGallery: () => { if (confirm('¿Borrar todas las fotos de la galería?')) this.saveGallery([]); },
+
+      importText: s.importText,
+      onImportChange: e => this.setState({ importText: e.target.value }),
+      exportData: () => {
+        const keys = ['jf_portada', 'jf_chatbot_avatar', 'jf_categories', 'jf_portfolio', 'jf_testimonials', 'jf_gallery', 'jf_faqs'];
+        const out = {}; keys.forEach(k => { const v = localStorage.getItem(k); if (v) out[k] = v; });
+        const txt = JSON.stringify(out);
+        navigator.clipboard.writeText(txt).then(() => alert('Datos copiados al portapapeles.')).catch(() => prompt('Copia este texto:', txt));
+      },
+      importBackup: () => {
+        try {
+          const obj = JSON.parse(this.state.importText.trim());
+          Object.keys(obj).forEach(k => localStorage.setItem(k, obj[k]));
+          alert('Datos restaurados.');
+          this.load();
+        } catch (e) { alert('Backup inválido.'); }
+      },
+
+      fileInputRef: this.fileInputRef,
+      handleFile: e => this.handleFile(e)
+    };
   }
 }
-function importBackup(){
-  var txt=document.getElementById('importData').value.trim();
-  if(!txt){alert('Pega los datos primero.');return;}
-  try{
-    var obj=JSON.parse(txt);
-    Object.keys(obj).forEach(function(k){ localStorage.setItem(k,obj[k]); });
-    alert('✅ Datos restaurados. Recarga la página para ver los cambios.');
-    loadAll();
-  }catch(e){ alert('Error al leer el backup. Asegúrate de copiar el texto completo.'); }
-}
 
-
-/* ── Trabajos / Portfolio ── */
-var _tjImg = '';
-
-function pickerTrabajo(){ _pending='trabajo'; var i=document.getElementById('fileInput'); i.value=''; i.click(); }
-
-function showTjPreview(src){
-  _tjImg = src;
-  var wrap = document.getElementById('tj-preview-wrap');
-  var img = document.getElementById('tj-preview-img');
-  if(wrap && img){ img.src=src; wrap.style.display='block'; }
-}
-
-function clearTjImg(){
-  _tjImg='';
-  var wrap=document.getElementById('tj-preview-wrap');
-  if(wrap) wrap.style.display='none';
-}
-
-function useDriveTrabajo(){
-  var v=document.getElementById('tj-drive').value.trim();
-  if(!v){alert('Pega un link o URL.');return;}
-  showTjPreview(driveUrl(v));
-}
-
-function getPortfolioData(){
-  try{ var d=localStorage.getItem('jf_portfolio'); if(d) return JSON.parse(d)||[]; }catch(e){}
-  return [];
-}
-function savePortfolioData(arr){
-  localStorage.setItem('jf_portfolio', JSON.stringify(arr));
-}
-
-function saveTrabajo(){
-  var cat=document.getElementById('tj-cat').value;
-  var title=document.getElementById('tj-title').value.trim();
-  var desc=document.getElementById('tj-desc').value.trim();
-  if(!title){alert('Escribe un título para el trabajo.');return;}
-  var arr=getPortfolioData();
-  var id=Date.now();
-  arr.push({id:id, cat:cat, title:title, desc:desc, img:_tjImg});
-  savePortfolioData(arr);
-  document.getElementById('tj-title').value='';
-  document.getElementById('tj-desc').value='';
-  document.getElementById('tj-drive').value='';
-  clearTjImg();
-  renderTjList();
-  alert('✅ Trabajo añadido a la galería.');
-}
-
-function deleteTrabajo(id){
-  if(!confirm('¿Eliminar este trabajo de la galería?'))return;
-  var arr=getPortfolioData().filter(function(i){return i.id!==id;});
-  savePortfolioData(arr);
-  renderTjList();
-}
-
-function clearAllTj(){
-  if(!confirm('¿Borrar TODOS los trabajos de la galería?'))return;
-  localStorage.removeItem('jf_portfolio');
-  renderTjList();
-  alert('↩ Galería limpiada. Se usarán los trabajos de ejemplo.');
-}
-
-function renderTjList(){
-  var arr=getPortfolioData();
-  var el=document.getElementById('tj-list');
-  if(!el)return;
-  if(!arr.length){
-    el.innerHTML='<p style="color:rgba(255,255,255,0.35);font-size:0.74rem;text-align:center;padding:18px 0;">Todavía no hay trabajos añadidos.<br>Se muestran los 6 ejemplos por defecto.</p>';
-    return;
-  }
-  var icons={'Peluquería':'💇','Albañilería':'🏗️','Hostelería':'☕','Páginas Web':'💻','Cuidados':'👵','Otro':'⭐'};
-  el.innerHTML=arr.map(function(item){
-    var icon=icons[item.cat]||'⭐';
-    return '<div style="display:flex;align-items:center;gap:10px;background:#0d0d0d;border:1px solid rgba(255,215,0,0.15);border-radius:10px;padding:10px 12px;">'+
-      (item.img?'<img src="'+item.img+'" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;" onerror="this.style.display='none'">':'<div style="width:48px;height:48px;border-radius:8px;background:#1a1400;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">'+icon+'</div>')+
-      '<div style="flex:1;min-width:0;">'+
-        '<div style="font-size:0.62rem;color:#FFD700;font-weight:700;letter-spacing:1px;">'+icon+' '+item.cat+'</div>'+
-        '<div style="font-size:0.82rem;color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.title+'</div>'+
-        (item.desc?'<div style="font-size:0.68rem;color:rgba(255,255,255,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.desc+'</div>':'')+
-      '</div>'+
-      '<button onclick="deleteTrabajo('+item.id+')" style="flex-shrink:0;background:transparent;border:1px solid rgba(255,60,60,0.35);color:rgba(255,90,90,0.7);padding:5px 9px;border-radius:6px;cursor:pointer;font-size:0.7rem;font-family:'Outfit',sans-serif;">🗑</button>'+
-    '</div>';
-  }).join('');
-}
-
-/* ── Load stored values on open ── */
-function saveAmwayUrl(){
-  var v=document.getElementById('amway-url-in').value.trim();
-  if(!v){alert('Pega el link de tu tienda Amway.');return;}
-  localStorage.setItem('jf_amway_url',v);
-  alert('✅ Link de Amway guardado. Ya aparece en el botón de la tienda.');
-}
-
-function loadAll(){
-  renderTjList();
-  var au=localStorage.getItem('jf_amway_url');
-  if(au){var el=document.getElementById('amway-url-in');if(el)el.value=au;}
-  var p=localStorage.getItem('jf_portada');
-  if(p) showPreviewPortada(p);
-  var a=localStorage.getItem('jf_chatbot_avatar');
-  if(a) showPreviewAvatar(a);
-  var ph=localStorage.getItem('jf_phones');
-  if(ph){ try{
-    var o=JSON.parse(ph);
-    if(o.albanileria) document.getElementById('ph-albanileria').value=o.albanileria;
-    if(o.web) document.getElementById('ph-web').value=o.web;
-    if(o.peluqueria) document.getElementById('ph-peluqueria').value=o.peluqueria;
-  }catch(e){} }
-}
 </script>
 </body>
 </html>
